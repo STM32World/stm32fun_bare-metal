@@ -11,12 +11,17 @@
 
 extern void _estack(void); // Defined in link.ld
 
+volatile uint32_t cnt = 0;
+volatile uint32_t cnt2 = 0;
+
 // The _reset jump here on startup
 int main(void) {
-    // Main application code
+
     while (true) {
-        // Infinite loop
+        ++cnt;
+        cnt2 = cnt * 2;
     }
+
 }
 
 // Startup code
