@@ -21,3 +21,5 @@ flash: firmware.bin
 
 clean:
 	rm -rf firmware.*
+
+.PHONY: all clean flash
