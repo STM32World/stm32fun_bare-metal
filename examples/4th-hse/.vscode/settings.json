@@ -1,0 +1,11 @@
+{
+    "cortex-debug.armToolchainPath": "/usr/bin/",
+    "cortex-debug.gdbPath": "/usr/bin/gdb-multiarch",
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/lth/src/stm32fun_bare-metal/examples/1st-minimal",
+            "binaryPath": "/home/lth/src/stm32fun_bare-metal/examples/1st-minimal/firmware.elf",
+            "binaryArgs": []
+        }
+    ]
+}
