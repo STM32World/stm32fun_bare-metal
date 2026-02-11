@@ -5,11 +5,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+// Bit manipulation macros
 #define BIT(x) (1UL << (x))
 #define PIN(bank, num) ((((bank) - 'A') << 8) | (num))
 #define PINNO(pin) (pin & 255)
 #define PINBANK(pin) (pin >> 8)
 
+// RCC peripheral structure
 struct rcc {
     volatile uint32_t CR;            // Clock control register (Internal/External/PLL enable)
     volatile uint32_t PLLCFGR;       // PLL configuration register
@@ -43,8 +45,9 @@ struct rcc {
     volatile uint32_t PLLI2SCFGR;    // PLLI2S configuration register
 };
 
-#define RCC ((struct rcc*)0x40023800)
+#define RCC ((struct rcc*)0x40023800) // RCC base address
 
+// SysTick peripheral structure
 struct systick {
     volatile uint32_t CSR;    // Control and Status Register (Enable/Interrupt/Source/Flag)
     volatile uint32_t RVR;    // Reload Value Register (The start value for the countdown)
@@ -52,8 +55,9 @@ struct systick {
     volatile uint32_t CALIB;  // Calibration Value Register
 };
 
-#define SYSTICK ((struct systick*)0xe000e010)
+#define SYSTICK ((struct systick*)0xe000e010) // SysTick base address
 
+// GPIO peripheral structure
 struct gpio {
     volatile uint32_t MODER;    // Port mode register (Input/Output/AF/Analog)
     volatile uint32_t OTYPER;   // Port output type register (Push-pull/Open-drain)
@@ -66,7 +70,7 @@ struct gpio {
     volatile uint32_t AFR[2];   // Alternate function registers (Low/High)
 };
 
-#define GPIO(bank) ((struct gpio*)(0x40020000 + 0x400 * (bank)))
+#define GPIO(bank) ((struct gpio*)(0x40020000 + 0x400 * (bank))) // GPIO base address
 
 // Enum values are per datasheet: 0, 1, 2, 3
 enum {
@@ -76,6 +80,7 @@ enum {
     GPIO_MODE_ANALOG,
 };
 
+// Initialize SysTick timer to generate interrupts every 'ticks' clock cycles
 static inline void systick_init(uint32_t ticks) {
     SYSTICK->RVR = ticks - 1;                 // Set reload register
     SYSTICK->CVR = 0;                         // Clear current value register
@@ -84,6 +89,7 @@ static inline void systick_init(uint32_t ticks) {
     // RCC->APB2ENR |= BIT(14);                  // Enable SYSTICK clock
 }
 
+// Set GPIO pin mode
 static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
     struct gpio* gpio = GPIO(PINBANK(pin));  // GPIO bank
     int n = PINNO(pin);                      // Pin number
@@ -91,13 +97,16 @@ static inline void gpio_set_mode(uint16_t pin, uint8_t mode) {
     gpio->MODER |= (mode & 3) << (n * 2);    // Set new mode
 }
 
+// Write value to GPIO pin
 static inline void gpio_write(uint16_t pin, bool val) {
     struct gpio* gpio = GPIO(PINBANK(pin));
     gpio->BSRR = (1U << PINNO(pin)) << (val ? 0 : 16);
 }
 
+// Global tick counter (in milliseconds)
 static volatile uint32_t s_ticks = 0;
 
+// Main function
 int main(void) {
     uint16_t led = PIN('C', 13);  // Blue LED
 
@@ -124,11 +133,11 @@ int main(void) {
 
 // Systick interrupt handler
 void systick_handler(void) {
-    ++s_ticks; // Will increase every 1 ms
+    ++s_ticks;  // Will increase every 1 ms
 }
 
 // Startup code
-__attribute__((naked, noreturn)) void _reset(void) { // Naked might cause a warning but is allowed in gcc
+__attribute__((naked, noreturn)) void _reset(void) {  // Naked might cause a warning but is allowed in gcc
     extern long _sbss, _ebss, _sdata, _edata, _sidata;
 
     for (long* dst = &_sbss; dst < &_ebss; dst++) *dst = 0;
