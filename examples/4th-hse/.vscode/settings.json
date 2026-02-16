@@ -7,5 +7,8 @@
             "binaryPath": "/home/lth/src/stm32fun_bare-metal/examples/1st-minimal/firmware.elf",
             "binaryArgs": []
         }
-    ]
+    ],
+    "files.associations": {
+        "cstdint": "c"
+    }
 }

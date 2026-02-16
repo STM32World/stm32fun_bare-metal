@@ -11,8 +11,8 @@
 #define PINBANK(pin) (pin >> 8)
 
 enum {
-    APB1_PRE = 4 /* AHB clock / 4 */,
-    APB2_PRE = 2 /* AHB clock / 2 */
+    APB1_PRE = 4, /* AHB clock / 4 */
+    APB2_PRE = 2, /* AHB clock / 2 */
 };
 
 enum {  // Run at 168 Mhz
@@ -56,7 +56,7 @@ struct scb {
     volatile uint32_t AIRCR;    // Application interrupt and reset control register
     volatile uint32_t SCR;      // System control register
     volatile uint32_t CCR;      // Configuration and control register
-    volatile uint8_t  SHP[12];  // System handler priority registers
+    volatile uint8_t SHP[12];   // System handler priority registers
     volatile uint32_t SHCSR;    // System handler control and state register
     volatile uint32_t CFSR;     // Configurable fault status register
     volatile uint32_t HFSR;     // Hard fault status register
@@ -134,6 +134,7 @@ static inline void gpio_write(uint16_t pin, bool val) {
 static volatile uint32_t s_ticks = 0;
 
 int main(void) {
+
     uint16_t led = PIN('C', 13);  // Blue LED
 
     system_clock_init();
@@ -159,7 +160,9 @@ int main(void) {
     return 0;
 }
 
-void systick_handler(void) { ++s_ticks; }
+void systick_handler(void) {
+    ++s_ticks;
+}
 
 // Startup code
 __attribute__((naked, noreturn)) void _reset(void) {
@@ -198,3 +201,5 @@ __attribute__((section(".vectors"))) void (*const tab[16 + 91])(void) = {
     0,
     systick_handler,
 };
+
+// vim: set ts=4 sw=4 et:
