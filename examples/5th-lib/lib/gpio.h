@@ -1,10 +1,7 @@
 #ifndef __GPIO_H
 #define __GPIO_H
 
-#include <stdint.h>
-#include <stdbool.h> 
-
-#include "main.h"
+#include "f4x.h"
 
 // GPIO peripheral structure
 struct gpio {

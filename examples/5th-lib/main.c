@@ -2,9 +2,6 @@
  * Systick Blink 16 MHz HSE bare-metal STM32 example
  */
 
-#include <stdbool.h>
-#include <stdint.h>
-
 #include "main.h" 
 
 void system_clock_init(void) {
@@ -39,7 +36,7 @@ int main(void) {
 
     system_clock_init();
 
-    systick_init(SYS_FREQUENCY / 1000);  // 1ms SysTick (assuming 16MHz clock)
+    systick_init(SYS_FREQUENCY / 1000);  // 1ms SysTick 
 
     RCC->AHB1ENR |= BIT(PINBANK(led));     // Enable GPIO clock for LED
     gpio_set_mode(led, GPIO_MODE_OUTPUT);  // Set blue LED to output mode

@@ -1,5 +1,5 @@
 
-#include "f4x.h"
+#include "main.h"
 
 // Global tick counter (in milliseconds)
 volatile uint32_t s_ticks = 0;
