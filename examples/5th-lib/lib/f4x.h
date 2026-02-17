@@ -4,7 +4,10 @@
 #include <stdint.h>
 #include <stdbool.h> 
 
+#include "scb.h"
 #include "rcc.h"
+#include "flash.h"
+#include "systick.h"
 #include "gpio.h"
 
 // Bit manipulation macros

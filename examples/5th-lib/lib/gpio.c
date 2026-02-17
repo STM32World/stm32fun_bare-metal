@@ -1,5 +1,5 @@
 
-#include "gpio.h"
+#include "main.h"
 
 // Set GPIO pin mode
 inline void gpio_set_mode(uint16_t pin, uint8_t mode) {

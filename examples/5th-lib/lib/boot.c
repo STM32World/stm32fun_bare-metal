@@ -1,5 +1,6 @@
 
-#include "f4x.h"
+
+#include "main.h"
 
 _weak int main(void) {
     // Default main does nothing - can be overridden by user

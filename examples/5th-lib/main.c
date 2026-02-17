@@ -5,69 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "f4x.h" 
-
-enum {
-    APB1_PRE = 4, /* AHB clock / 4 */
-    APB2_PRE = 2, /* AHB clock / 2 */
-};
-
-enum {  // Run at 168 Mhz
-    PLL_HSE = 16,
-    PLL_M = 8,
-    PLL_N = 168,
-    PLL_P = 2,
-};
-
-#define FLASH_LATENCY 5
-#define SYS_FREQUENCY ((PLL_HSE * PLL_N / PLL_M / PLL_P) * 1000000)
-#define APB2_FREQUENCY (SYS_FREQUENCY / (BIT(APB2_PRE - 3)))
-#define APB1_FREQUENCY (SYS_FREQUENCY / (BIT(APB1_PRE - 3)))
-
-struct flash {
-    volatile uint32_t ACR;      // Access control register
-    volatile uint32_t KEYR;     // Key register
-    volatile uint32_t OPTKEYR;  // Option key register
-    volatile uint32_t SR;       // Status register
-    volatile uint32_t CR;       // Control register
-    volatile uint32_t OPTCR;    // Option control register
-};
-
-#define FLASH ((struct flash*)0x40023C00) // Flash base address
-
-// --- SCB (System Control Block) Register Map ---
-struct scb {
-    volatile uint32_t CPUID;    // CPU ID base register
-    volatile uint32_t ICSR;     // Interrupt control and state register
-    volatile uint32_t VTOR;     // Vector table offset register
-    volatile uint32_t AIRCR;    // Application interrupt and reset control register
-    volatile uint32_t SCR;      // System control register
-    volatile uint32_t CCR;      // Configuration and control register
-    volatile uint8_t SHP[12];   // System handler priority registers
-    volatile uint32_t SHCSR;    // System handler control and state register
-    volatile uint32_t CFSR;     // Configurable fault status register
-    volatile uint32_t HFSR;     // Hard fault status register
-    volatile uint32_t DFSR;     // Debug fault status register
-    volatile uint32_t MMFAR;    // MemManage fault address register
-    volatile uint32_t BFAR;     // Bus fault address register
-    volatile uint32_t AFSR;     // Auxiliary fault status register
-    volatile uint32_t RES[12];  // Padding to 0xD8
-    volatile uint32_t CPACR;    // Coprocessor access control register (For FPU)
-};
-
-#define SCB ((struct scb*)0xE000ED00)
-
-// SysTick peripheral structure
-struct systick {
-    volatile uint32_t CSR;    // Control and Status Register (Enable/Interrupt/Source/Flag)
-    volatile uint32_t RVR;    // Reload Value Register (The start value for the countdown)
-    volatile uint32_t CVR;    // Current Value Register (Read to see current time/Write to clear)
-    volatile uint32_t CALIB;  // Calibration Value Register
-};
-
-#define SYSTICK ((struct systick*)0xe000e010) // SysTick base address
-
-
+#include "main.h" 
 
 void system_clock_init(void) {
 
@@ -93,18 +31,6 @@ void system_clock_init(void) {
     while ((RCC->CFGR & (3 << 2)) != (2 << 2));  // Wait for SWS to indicate PLL
     
 }
-
-// Initialize SysTick timer to generate interrupts every 'ticks' clock cycles
-static inline void systick_init(uint32_t ticks) {
-    SYSTICK->RVR = ticks - 1;                 // Set reload register
-    SYSTICK->CVR = 0;                         // Clear current value register
-    SYSTICK->CSR = BIT(0) | BIT(1) | BIT(2);  // Enable SysTick, use processor clock
-    // We dont need to enable anything in RCC since its a core peripheral and is clocked by the core
-    // RCC->APB2ENR |= BIT(14);                  // Enable SYSTICK clock
-}
-
-// Global tick counter (in milliseconds)
-static volatile uint32_t s_ticks = 0;
 
 // Main function
 int main(void) {
@@ -139,4 +65,4 @@ void systick_handler(void) {
     ++s_ticks;  // Will increase every 1 ms
 }
 
-
+// vim: set ts=4 sw=4 expandtab:

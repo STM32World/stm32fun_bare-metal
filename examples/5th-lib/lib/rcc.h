@@ -2,7 +2,7 @@
 #define __RCC_H
 
 #include <stdint.h>
-#include "f4x.h"
+#include "main.h"
 
 // RCC peripheral structure
 struct rcc {

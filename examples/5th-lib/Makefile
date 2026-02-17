@@ -12,7 +12,8 @@
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
 
-LIBDIR = lib
+ROOTDIR := $(CURDIR)
+LIBDIR = ${ROOTDIR}/lib
 
 CFLAGS  ?=  -W -Wall -Wextra -Werror -Wundef -Wshadow -Wdouble-promotion \
 	-Wformat-truncation -fno-common -Wconversion \
@@ -40,5 +41,6 @@ flash: firmware.bin
 
 clean:
 	rm -rf firmware.*
+	rm -rf $(OBJS)
 
 .PHONY: all clean flash
