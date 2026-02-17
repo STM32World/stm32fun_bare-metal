@@ -1,3 +1,11 @@
+/**
+ *
+ * GPIO interface for STM32 microcontrollers.
+ *
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
+ *
+ */
 
 #include "gpio.h"
 

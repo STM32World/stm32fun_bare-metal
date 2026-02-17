@@ -1,7 +1,17 @@
+/**
+ *
+ * RCC (Reset and Clock Control) interface for STM32 microcontrollers.
+ *
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
+ *
+ */
+
 #ifndef __RCC_H
 #define __RCC_H
 
 #include <stdint.h>
+
 #include "main.h"
 
 // RCC peripheral structure
@@ -38,6 +48,6 @@ struct rcc {
     volatile uint32_t PLLI2SCFGR;    // PLLI2S configuration register
 };
 
-#define RCC ((struct rcc*)0x40023800) // RCC base address
+#define RCC ((struct rcc*)0x40023800)  // RCC base address
 
 #endif /* __RCC_H */

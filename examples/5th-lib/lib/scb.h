@@ -1,3 +1,12 @@
+/**
+ *
+ * SCB (System Control Block) interface for STM32 microcontrollers.
+ *
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
+ *
+ */
+
 #ifndef __SCB_H
 #define __SCB_H
 

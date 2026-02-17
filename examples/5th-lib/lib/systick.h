@@ -1,7 +1,15 @@
+/**
+ *
+ * SysTick (System Timer) interface for STM32 microcontrollers.
+ *
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
+ *
+ */
+
 #ifndef _SYSTICK_H_
 #define _SYSTICK_H_
 
-#include <stdint.h>
 #include "f4x.h"
 
 // SysTick peripheral structure
@@ -12,10 +20,10 @@ struct systick {
     volatile uint32_t CALIB;  // Calibration Value Register
 };
 
-#define SYSTICK ((struct systick*)0xe000e010) // SysTick base address
+#define SYSTICK ((struct systick*)0xe000e010)  // SysTick base address
 
 extern volatile uint32_t s_ticks;
 
 void systick_init(uint32_t ticks);
 
-#endif // _SYSTICK_H_
+#endif  // _SYSTICK_H_

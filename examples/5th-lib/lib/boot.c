@@ -1,4 +1,11 @@
-
+/**
+ *
+ * Vector table and startup code for STM32F4xx microcontrollers.
+ *
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
+ *
+ */
 
 #include "f4x.h"
 

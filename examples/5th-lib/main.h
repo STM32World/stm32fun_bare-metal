@@ -1,3 +1,14 @@
+/**
+ * 
+ * Systick Blink 16 MHz HSE bare-metal STM32 example
+ * 
+ * This file contains the project configuration and common includes for the Systick Blink example.
+ * 
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
+ * 
+ */
+
 #ifndef __MAIN_H
 #define __MAIN_H
 

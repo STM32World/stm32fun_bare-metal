@@ -1,3 +1,12 @@
+/**
+ *
+ * GPIO interface for STM32 microcontrollers.
+ *
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
+ *
+ */
+
 #ifndef __GPIO_H
 #define __GPIO_H
 
@@ -16,7 +25,7 @@ struct gpio {
     volatile uint32_t AFR[2];   // Alternate function registers (Low/High)
 };
 
-#define GPIO(bank) ((struct gpio*)(0x40020000 + 0x400 * (bank))) // GPIO base address
+#define GPIO(bank) ((struct gpio*)(0x40020000 + 0x400 * (bank)))  // GPIO base address
 
 // Enum values are per datasheet: 0, 1, 2, 3
 enum {

@@ -1,5 +1,13 @@
+/**
+ *
+ * SysTick (System Timer) interface for STM32 microcontrollers.
+ *
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
+ *
+ */
 
-#include "main.h"
+#include "systick.h"
 
 // Global tick counter (in milliseconds)
 volatile uint32_t s_ticks = 0;

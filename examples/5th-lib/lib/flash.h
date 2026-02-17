@@ -1,3 +1,12 @@
+/**
+ *
+ * Flash memory interface for STM32 microcontrollers.
+ *
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
+ *
+ */
+
 #ifndef __FLASH_H
 #define __FLASH_H
 
@@ -13,6 +22,6 @@ struct flash {
     volatile uint32_t OPTCR;    // Option control register
 };
 
-#define FLASH ((struct flash*)0x40023C00) // Flash base address
+#define FLASH ((struct flash*)0x40023C00)  // Flash base address
 
 #endif /* __FLASH_H */
