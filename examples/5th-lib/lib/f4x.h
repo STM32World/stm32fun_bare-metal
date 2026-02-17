@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h> 
 
+#include "rcc.h"
 #include "gpio.h"
 
 // Bit manipulation macros
