@@ -4,10 +4,13 @@
 #
 # Makefile for building and flashing firmware for STM32F4 microcontroller
 # This Makefile compiles the source code, links it to create an ELF file, converts it to a binary format, and provides a target for flashing the firmware to the device using st-flash.
+#
 # Usage:
+#
 #   make        # Build the firmware
 #   make flash  # Flash the firmware to the device
 #   make clean  # Clean the build artifacts	
+#
 
 CC = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy

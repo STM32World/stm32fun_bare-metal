@@ -12,3 +12,8 @@ void systick_init(uint32_t ticks) {
     // We dont need to enable anything in RCC since its a core peripheral and is clocked by the core
     // RCC->APB2ENR |= BIT(14);                  // Enable SYSTICK clock
 }
+
+// Systick interrupt handler
+void systick_handler(void) {
+    ++s_ticks;  // Will increase every 1 ms
+}
