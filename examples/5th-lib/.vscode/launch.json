@@ -1,0 +1,25 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug STM32 (OpenOCD)",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/firmware.elf", // Path to your compiled .elf
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "openocd",
+            "device": "STM32F407VG", // Change to your specific chip part number
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32f4x.cfg" // Change to match your chip series
+            ],
+            "preLaunchTask": "build", // This maps to a task in tasks.json
+            "svdFile": "${workspaceFolder}/STM32F407.svd", // Optional: For peripheral register view
+            "liveWatch": {
+                "enabled": true,
+                "samplesPerSecond": 4
+            }
+        }
+    ]
+}
