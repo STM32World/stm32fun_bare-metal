@@ -1,11 +1,8 @@
 BasedOnStyle: LLVM
 IndentWidth: 4
 ColumnLimit: 0
-BasedOnStyle: Google
-IndentWidth: 4
 TabWidth: 4
 UseTab: Never
-ColumnLimit: 0
 
 BinPackArguments: false
 BinPackParameters: false

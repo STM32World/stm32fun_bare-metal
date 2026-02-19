@@ -14,22 +14,28 @@
  *
  */
 
-#include "main.h"  // Main header contains config and common includes
+#include "main.h" // Main header contains config and common includes
 
 #include <stdio.h>
 
 // Main function
 int main(void) {
 
-    uint16_t led = PIN('C', 13);  // Blue LED
+    uint16_t led = PIN('C', 13); // Blue LED
 
-    sysclock_init();  // Settings in main.h: 16 MHz HSE - core clock at 168 MHz and enable apb1 at 42 MHz, apb2 at 84 MHz
+    sysclock_init(); // Settings in main.h: 16 MHz HSE - core clock at 168 MHz and enable apb1 at 42 MHz, apb2 at 84 MHz
 
-    systick_init(SYS_FREQUENCY / 1000);  // 1ms SysTick
+    systick_init(SYS_FREQUENCY / 1000); // 1ms SysTick
 
-    gpio_set_mode(led, GPIO_MODE_OUTPUT);  // Set blue LED to output mode
-    
-    uart_init(USART1, 2000000);  // Initialize USART1 for debugging
+    gpio_set_mode(led, GPIO_MODE_OUTPUT); // Set blue LED to output mode
+
+    uart_init(USART1, 2000000); // Initialize USART1 for debugging
+
+    printf("\n\n\nSystem initialized.\n");
+    printf("Core clock: %d Hz\n", SYS_FREQUENCY);
+    printf("APB1 clock: %d Hz\n", APB1_FREQUENCY);
+    printf("APB2 clock: %d Hz\n", APB2_FREQUENCY);
+    printf("Starting main loop...\n");
 
     bool led_state = true;
     uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0;
@@ -39,20 +45,19 @@ int main(void) {
         now = s_ticks;
 
         if (now >= next_blink) {
-            gpio_write(led, led_state);  // Toggle LED every 500ms
+            gpio_write(led, led_state); // Toggle LED every 500ms
             led_state = !led_state;
             next_blink = now + 500;
         }
 
         if (now >= next_tick) {
-            //uart_write_buf(USART1, "hi\r\n", 4);
+            // uart_write_buf(USART1, "hi\r\n", 4);
             printf("Tick: %lu (loop = %lu)\n", now / 1000, loop_cnt);
             loop_cnt = 0;
             next_tick = now + 1000;
         }
 
         ++loop_cnt;
-
     }
 
     return 0;
