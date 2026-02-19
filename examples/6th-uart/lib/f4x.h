@@ -10,6 +10,7 @@
 #ifndef __F4X_H
 #define __F4X_H 
 
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h> 
 

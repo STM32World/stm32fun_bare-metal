@@ -20,6 +20,11 @@ void sysclock_init(void) {
     while (!(RCC->CR & BIT(17)))
         ;  // Wait for HSERDY
 
+    // AHB = /1, APB2 = /2 (84MHz), APB1 = /4 (42MHz)
+    RCC->CFGR |= (0 << 4) |                     // HPRE (AHB)
+                 (PPRE_BITS(APB2_PRE) << 13) |  // PPRE2 (APB2)
+                 (PPRE_BITS(APB1_PRE) << 10);   // PPRE1 (APB1)
+
     // Configure PLL
     // Clear and set M, N, P, and importantly: Set Bit 22 to select HSE as source
     RCC->PLLCFGR = (PLL_M << 0) | (PLL_N << 6) | (((PLL_P >> 1) - 1) << 16) | BIT(22);
@@ -34,4 +39,6 @@ void sysclock_init(void) {
     RCC->CFGR |= 2;             // Select PLL (0b10)
     while ((RCC->CFGR & (3 << 2)) != (2 << 2))
         ;  // Wait for SWS to indicate PLL
+
+    RCC->AHB1ENR |= BIT(0) | BIT(1) | BIT(2);  // Enable clocks for GPIOA, GPIOB, GPIOC 
 }
