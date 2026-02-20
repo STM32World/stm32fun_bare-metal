@@ -4,7 +4,7 @@
         {
             "name": "Debug STM32 (OpenOCD)",
             "cwd": "${workspaceFolder}",
-            "executable": "${workspaceFolder}/firmware.elf", // Path to your compiled .elf
+            "executable": "${workspaceFolder}/build/firmware.elf", // Path to your compiled .elf
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",

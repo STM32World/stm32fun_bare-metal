@@ -29,7 +29,7 @@ int main(void) {
 
     gpio_set_mode(led, GPIO_MODE_OUTPUT); // Set blue LED to output mode
 
-    uart_init(USART1, 2000000); // Initialize USART1 for debugging
+    uart_init(USART1, 2000000); // Initialize USART1 for debugging - 2000000 bps (2 Mbps) works nicely with 168 MHz core clock
 
     printf("\n\n\nSystem initialized.\n");
     printf("Core clock: %d Hz\n", SYS_FREQUENCY);
