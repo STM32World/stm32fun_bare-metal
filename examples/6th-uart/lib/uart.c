@@ -24,37 +24,37 @@ void uart_init(struct uart *uart, unsigned long baud) {
 
     // Enable USART/UART clock, determine AF and pins based on uart instance
     if (uart == USART1) {
-        RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+        RCC->APB2ENR.reg |= RCC_APB2ENR_USART1EN;
         af = 7;  // AF7 for USART1
         rx = PIN('A', 10);  // USART1_RX
         tx = PIN('A', 9);   // USART1_TX
         pclk = APB2_FREQUENCY;
     } else if (uart == USART2) {
-        RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+        RCC->APB1ENR.reg |= RCC_APB1ENR_USART2EN;
         af = 7;  // AF7 for USART2
         rx = PIN('A', 3);   // USART2_RX
         tx = PIN('A', 2);   // USART2_TX
         pclk = APB1_FREQUENCY;
     } else if (uart == USART3) {
-        RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
+        RCC->APB1ENR.reg |= RCC_APB1ENR_USART3EN;
         af = 7;  // AF7 for USART3
         rx = PIN('B', 11);  // USART3_RX
         tx = PIN('B', 10);  // USART3_TX
         pclk = APB1_FREQUENCY; 
     } else if (uart == UART4) {
-        RCC->APB1ENR |= RCC_APB1ENR_UART4EN;
+        RCC->APB1ENR.reg |= RCC_APB1ENR_UART4EN;
         af = 8;  // AF8 for USART4
         rx = PIN('C', 11);  // USART4_RX
         tx = PIN('C', 10);  // USART4_TX
         pclk = APB1_FREQUENCY;
     } else if (uart == UART5) {
-        RCC->APB1ENR |= RCC_APB1ENR_UART5EN;
+        RCC->APB1ENR.reg |= RCC_APB1ENR_UART5EN;
         af = 8;  // AF8 for UART5
         rx = PIN('C', 12);  // UART5_RX
         tx = PIN('D', 2);   // UART5_TX
         pclk = APB1_FREQUENCY;
     } else if (uart == USART6) {
-        RCC->APB2ENR |= RCC_APB2ENR_USART6EN;
+        RCC->APB2ENR.reg |= RCC_APB2ENR_USART6EN;
         af = 8;  // AF8 for USART6
         rx = PIN('C', 7);   // USART6_RX
         tx = PIN('C', 6);   // USART6_TX
