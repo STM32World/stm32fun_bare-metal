@@ -40,24 +40,23 @@ int main(void) {
     bool led_state = true;
     uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0;
 
-    while (true) {
+    for (;;) { // Super loop
 
         now = s_ticks;
 
         if (now >= next_blink) {
-            gpio_write(led, led_state); // Toggle LED every 500ms
+            gpio_write(led, led_state); // Toggle LED
             led_state = !led_state;
-            next_blink = now + 500;
+            next_blink = now + 500; // Schedule next toggle in 500 ms
         }
 
         if (now >= next_tick) {
-            // uart_write_buf(USART1, "hi\r\n", 4);
             printf("Tick: %lu (loop = %lu)\n", now / 1000, loop_cnt);
             loop_cnt = 0;
-            next_tick = now + 1000;
+            next_tick = now + 1000; // Schedule next tick in 1000 ms
         }
 
-        ++loop_cnt;
+        ++loop_cnt; // Just a counter to show how many times the loop runs between ticks
     }
 
     return 0;

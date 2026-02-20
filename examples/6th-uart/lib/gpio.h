@@ -35,7 +35,6 @@ struct gpio {
             volatile uint32_t PIN15 : 2;
         } field;
     } MODER;
-
     union { // Output type register: 1 bit per pin
         volatile uint32_t reg;
         struct {
@@ -58,7 +57,6 @@ struct gpio {
             volatile uint32_t RES : 16;
         } field;
     } OTYPER;
-
     union { // OSPEEDR register: 2 bits per pin
         volatile uint32_t reg;
         struct {
@@ -80,7 +78,6 @@ struct gpio {
             volatile uint32_t PIN15 : 2;
         } field;
     } OSPEEDR;
-
     union { // PUPDR register: 2 bits per pin
         volatile uint32_t reg;
         struct {
@@ -102,7 +99,6 @@ struct gpio {
             volatile uint32_t PIN15 : 2;
         } field;
     } PUPDR;
-
     union { // IDR register: 1 bit per pin for input data, 16 bits reserved
         volatile uint32_t reg;
         struct {
@@ -125,7 +121,6 @@ struct gpio {
             volatile uint32_t RES : 16;
         } field;
     } IDR;
-
     union { // ODR register: 1 bit per pin for output data, 16 bits reserved
         volatile uint32_t reg;
         struct {
@@ -148,7 +143,6 @@ struct gpio {
             volatile uint32_t RES : 16;
         } field;
     } ODR;
-
     union { // BSRR register: 16 bits for setting pins, 16 bits for resetting pins
         volatile uint32_t reg;
         struct {
@@ -186,7 +180,6 @@ struct gpio {
             volatile uint32_t CLR15 : 1;
         } field;
     } BSRR;
-
     union { // LCKR register: 16 bits for locking pins, 1 bit for lock key, 15 bits reserved
         volatile uint32_t reg;
         struct {
@@ -210,7 +203,6 @@ struct gpio {
             volatile uint32_t RES : 15;
         } field;
     } LCKR;
-
     union { // AFRL register: 4 bits per pin for alternate function selection
         volatile uint32_t reg;
         struct {
@@ -224,7 +216,6 @@ struct gpio {
             volatile uint32_t AF7 : 4;
         } field;
     } AFRL;
-
     union { // AFRH register: 4 bits per pin for alternate function selection
         volatile uint32_t reg;
         struct {

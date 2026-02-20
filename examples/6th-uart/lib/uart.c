@@ -76,12 +76,19 @@ void uart_init(struct uart *uart, unsigned long baud) {
     uart->BRR.reg = div;
 
 // This prevents RMW glitches and ensures UE is set with/after RE/TE.
-    struct uart tmp_uart = {0}; // Create a blank template
-    tmp_uart.CR1.field.RE = 1;
-    tmp_uart.CR1.field.TE = 1;
-    tmp_uart.CR1.field.UE = 1;
+//    struct uart tmp_uart = {0}; // Create a blank template
+//    tmp_uart.CR1.field.RE = 1;
+//    tmp_uart.CR1.field.TE = 1;
+//    tmp_uart.CR1.field.UE = 1;
     
-    uart->CR1.reg = tmp_uart.CR1.reg; // Atomic write to the hardware 
+//    uart->CR1.reg = tmp_uart.CR1.reg; // Atomic write to the hardware 
+
+    // Enable USART, receiver and transmitter
+    // This part is interesting because in order to avoid RMW issues with the UE bit, 
+    // the fields MUST be set to volatile.
+    uart->CR1.field.RE = 1; // Enable receiver
+    uart->CR1.field.TE = 1; // Enable transmitter
+    uart->CR1.field.UE = 1; // Enable USART
 
 }
 
@@ -101,3 +108,5 @@ void uart_write_char(struct uart *uart, char ch) {
 void uart_write_buf(struct uart *uart, char *buf, size_t len) {
     while (len-- > 0) uart_write_char(uart, *(uint8_t *) buf++);
 }
+
+// vim: et sts=4 sw=4 ts=4

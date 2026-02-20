@@ -14,13 +14,43 @@
 
 // SysTick peripheral structure
 struct systick {
-    volatile uint32_t CSR;    // Control and Status Register (Enable/Interrupt/Source/Flag)
-    volatile uint32_t RVR;    // Reload Value Register (The start value for the countdown)
-    volatile uint32_t CVR;    // Current Value Register (Read to see current time/Write to clear)
-    volatile uint32_t CALIB;  // Calibration Value Register
+    union { // Control and status register
+        volatile uint32_t reg;
+        struct {
+            volatile uint32_t ENABLE    : 1;  // Counter enable
+            volatile uint32_t TICKINT   : 1;  // SysTick exception request enable
+            volatile uint32_t CLKSOURCE : 1;  // Clock source (0: AHB/8, 1: Processor clock)
+            volatile uint32_t RES1      : 13; // Reserved
+            volatile uint32_t COUNTFLAG : 1;  // Returns 1 if timer counted to 0 since last read
+            volatile uint32_t RES2      : 15; // Reserved
+        } field;
+    } CSR;
+    union { // Reload value register
+        volatile uint32_t reg;
+        struct {
+            volatile uint32_t RELOAD    : 24; // Value to load into the CVR when it reaches 0
+            volatile uint32_t RES       : 8;  // Reserved
+        } field;
+    } RVR;
+    union { // Current value register
+        volatile uint32_t reg;
+        struct {
+            volatile uint32_t CURRENT   : 24; // Current counter value
+            volatile uint32_t RES       : 8;  // Reserved
+        } field;
+    } CVR;
+    union { // Calibration value register
+        volatile uint32_t reg;
+        struct {
+            volatile uint32_t TENMS     : 24; // Calibration value for 10ms
+            volatile uint32_t RES1      : 6;  // Reserved
+            volatile uint32_t SKEW      : 1;  // Is calibration value exact?
+            volatile uint32_t NOREF     : 1;  // Is there a reference clock?
+        } field;
+    } CALIB;
 };
 
-#define SYSTICK ((struct systick*)0xe000e010)  // SysTick base address
+#define SYSTICK ((volatile struct systick *) 0xE000E010)  // SysTick base address
 
 extern volatile uint32_t s_ticks;
 

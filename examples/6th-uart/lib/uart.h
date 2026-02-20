@@ -29,7 +29,6 @@ struct uart {
             volatile uint32_t RES : 22; // Reserved
         } field;
     } SR;
-
     union { // Data register
         volatile uint32_t reg;
         struct {
@@ -37,7 +36,6 @@ struct uart {
             volatile uint32_t RES : 23; // Reserved
         } field;
     } DR;
-
     union { // Baud rate register
         volatile uint32_t reg;
         struct {
@@ -46,7 +44,6 @@ struct uart {
             volatile uint32_t RES : 16;          // Reserved
         } field;
     } BRR;
-
     union { // Control register 1
         volatile uint32_t reg;
         struct {
@@ -69,7 +66,6 @@ struct uart {
             volatile uint32_t RES2 : 16;  // Reserved
         } field;
     } CR1;
-
     union { // Control register 2
         volatile uint32_t reg;
         struct {
@@ -87,7 +83,6 @@ struct uart {
             volatile uint32_t RES3 : 17; // Reserved
         } field;
     } CR2;
-
     union { // Control register 3
         volatile uint32_t reg;
         struct {
@@ -106,7 +101,6 @@ struct uart {
             volatile uint32_t RES : 20;   // Reserved
         } field;
     } CR3;
-
     union { // Guard time and prescaler register
         volatile uint32_t reg;
         struct {
