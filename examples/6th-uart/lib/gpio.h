@@ -15,7 +15,7 @@
 // GPIO peripheral structure
 struct gpio {
     union { // MODE register: 2 bits per pin
-        volatile uint32_t reg;
+        volatile uint32_t MODER;
         struct {
             volatile uint32_t PIN0 : 2;
             volatile uint32_t PIN1 : 2;
@@ -33,10 +33,10 @@ struct gpio {
             volatile uint32_t PIN13 : 2;
             volatile uint32_t PIN14 : 2;
             volatile uint32_t PIN15 : 2;
-        } field;
-    } MODER;
+        } MODER_b;
+    };
     union { // Output type register: 1 bit per pin
-        volatile uint32_t reg;
+        volatile uint32_t OTYPER;
         struct {
             volatile uint32_t PIN0 : 1;
             volatile uint32_t PIN1 : 1;
@@ -54,11 +54,11 @@ struct gpio {
             volatile uint32_t PIN13 : 1;
             volatile uint32_t PIN14 : 1;
             volatile uint32_t PIN15 : 1;
-            volatile uint32_t RES : 16;
-        } field;
-    } OTYPER;
+            volatile uint32_t : 16;
+        } OTYPER_b;
+    };
     union { // OSPEEDR register: 2 bits per pin
-        volatile uint32_t reg;
+        volatile uint32_t OSPEEDR;
         struct {
             volatile uint32_t PIN0 : 2;
             volatile uint32_t PIN1 : 2;
@@ -76,10 +76,10 @@ struct gpio {
             volatile uint32_t PIN13 : 2;
             volatile uint32_t PIN14 : 2;
             volatile uint32_t PIN15 : 2;
-        } field;
-    } OSPEEDR;
+        } OSPEEDR_b;
+    };
     union { // PUPDR register: 2 bits per pin
-        volatile uint32_t reg;
+        volatile uint32_t PUPDR;
         struct {
             volatile uint32_t PIN0 : 2;
             volatile uint32_t PIN1 : 2;
@@ -97,10 +97,10 @@ struct gpio {
             volatile uint32_t PIN13 : 2;
             volatile uint32_t PIN14 : 2;
             volatile uint32_t PIN15 : 2;
-        } field;
-    } PUPDR;
+        } PUPDR_b;
+    };
     union { // IDR register: 1 bit per pin for input data, 16 bits reserved
-        volatile uint32_t reg;
+        volatile uint32_t IDR;
         struct {
             volatile uint32_t PIN0 : 1;
             volatile uint32_t PIN1 : 1;
@@ -118,11 +118,11 @@ struct gpio {
             volatile uint32_t PIN13 : 1;
             volatile uint32_t PIN14 : 1;
             volatile uint32_t PIN15 : 1;
-            volatile uint32_t RES : 16;
-        } field;
-    } IDR;
+            volatile uint32_t : 16;
+        } IDR_b;
+    };
     union { // ODR register: 1 bit per pin for output data, 16 bits reserved
-        volatile uint32_t reg;
+        volatile uint32_t ODR;
         struct {
             volatile uint32_t PIN0 : 1;
             volatile uint32_t PIN1 : 1;
@@ -140,11 +140,11 @@ struct gpio {
             volatile uint32_t PIN13 : 1;
             volatile uint32_t PIN14 : 1;
             volatile uint32_t PIN15 : 1;
-            volatile uint32_t RES : 16;
-        } field;
-    } ODR;
+            volatile uint32_t : 16;
+        } ODR_b;
+    };
     union { // BSRR register: 16 bits for setting pins, 16 bits for resetting pins
-        volatile uint32_t reg;
+        volatile uint32_t BSRR;
         struct {
             volatile uint32_t SET0 : 1;
             volatile uint32_t SET1 : 1;
@@ -178,10 +178,10 @@ struct gpio {
             volatile uint32_t CLR13 : 1;
             volatile uint32_t CLR14 : 1;
             volatile uint32_t CLR15 : 1;
-        } field;
-    } BSRR;
+        } BSRR_b;
+    };
     union { // LCKR register: 16 bits for locking pins, 1 bit for lock key, 15 bits reserved
-        volatile uint32_t reg;
+        volatile uint32_t LCKR;
         struct {
             volatile uint32_t PIN0 : 1;
             volatile uint32_t PIN1 : 1;
@@ -200,11 +200,11 @@ struct gpio {
             volatile uint32_t PIN14 : 1;
             volatile uint32_t PIN15 : 1;
             volatile uint32_t LCKK : 1;
-            volatile uint32_t RES : 15;
-        } field;
-    } LCKR;
+            volatile uint32_t : 15;
+        } LCKR_b;
+    };
     union { // AFRL register: 4 bits per pin for alternate function selection
-        volatile uint32_t reg;
+        volatile uint32_t AFRL;
         struct {
             volatile uint32_t AF0 : 4;
             volatile uint32_t AF1 : 4;
@@ -214,10 +214,10 @@ struct gpio {
             volatile uint32_t AF5 : 4;
             volatile uint32_t AF6 : 4;
             volatile uint32_t AF7 : 4;
-        } field;
-    } AFRL;
+        } AFRL_b;
+    };
     union { // AFRH register: 4 bits per pin for alternate function selection
-        volatile uint32_t reg;
+        volatile uint32_t AFRH;
         struct {
             volatile uint32_t AF8 : 4;
             volatile uint32_t AF9 : 4;
@@ -227,8 +227,8 @@ struct gpio {
             volatile uint32_t AF13 : 4;
             volatile uint32_t AF14 : 4;
             volatile uint32_t AF15 : 4;
-        } field;
-    } AFRH;
+        } AFRH_b;
+    };
 };
 
 #define GPIO(bank) ((struct gpio *)(0x40020000 + 0x400 * (bank))) // GPIO base address

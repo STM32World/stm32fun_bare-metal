@@ -13,8 +13,8 @@
 #include "f4x.h"
 
 struct uart {
-    union { // Status register
-        volatile uint32_t reg;
+    union {                   // Status register
+        volatile uint32_t SR; // Status register (read-only)
         struct {
             volatile uint32_t PE : 1;   // Parity error
             volatile uint32_t FE : 1;   // Framing error
@@ -26,26 +26,26 @@ struct uart {
             volatile uint32_t TXE : 1;  // Transmit data register empty
             volatile uint32_t LBD : 1;  // LIN break detection flag
             volatile uint32_t CTS : 1;  // CTS flag
-            volatile uint32_t RES : 22; // Reserved
-        } field;
-    } SR;
-    union { // Data register
-        volatile uint32_t reg;
+            volatile uint32_t : 22;     // Reserved
+        } SR_b;
+    };
+    union {                   // Data register
+        volatile uint32_t DR; // Data register (read/write)
         struct {
             volatile uint32_t DR : 9;   // Data value
             volatile uint32_t RES : 23; // Reserved
-        } field;
-    } DR;
-    union { // Baud rate register
-        volatile uint32_t reg;
+        } DR_b;
+    };
+    union {                    // Baud rate register
+        volatile uint32_t BRR; // Baud rate register (read/write)
         struct {
             volatile uint32_t DIV_Fraction : 4;  // fraction of USARTDIV
             volatile uint32_t DIV_Mantissa : 12; // mantissa of USARTDIV
-            volatile uint32_t RES : 16;          // Reserved
-        } field;
-    } BRR;
-    union { // Control register 1
-        volatile uint32_t reg;
+            volatile uint32_t : 16;              // Reserved
+        } BRR_r;
+    };
+    union {                    // Control register 1
+        volatile uint32_t CR1; // Control register 1 (read/write)
         struct {
             volatile uint32_t SBK : 1;    // Send break
             volatile uint32_t RWU : 1;    // Receiver wakeup
@@ -64,27 +64,27 @@ struct uart {
             volatile uint32_t RES1 : 1;   // Reserved
             volatile uint32_t OVER8 : 1;  // Oversampling mode
             volatile uint32_t RES2 : 16;  // Reserved
-        } field;
-    } CR1;
-    union { // Control register 2
-        volatile uint32_t reg;
+        } CR1_b;
+    };
+    union {                    // Control register 2
+        volatile uint32_t CR2; // Control register 2 (read/write)
         struct {
             volatile uint32_t ADD : 4;   // Address of the USART node
-            volatile uint32_t RES1 : 1;  // Reserved
+            volatile uint32_t : 1;       // Reserved
             volatile uint32_t LBDL : 1;  // LIN break detection length
             volatile uint32_t LBDIE : 1; // LIN break detection interrupt enable
-            volatile uint32_t RES2 : 1;  // Reserved
+            volatile uint32_t : 1;       // Reserved
             volatile uint32_t LBCL : 1;  // Last bit clock pulse
             volatile uint32_t CPHA : 1;  // Clock phase
             volatile uint32_t CPOL : 1;  // Clock polarity
             volatile uint32_t CLKEN : 1; // Clock enable
             volatile uint32_t STOP : 2;  // STOP bits
             volatile uint32_t LINEN : 1; // LIN mode enable
-            volatile uint32_t RES3 : 17; // Reserved
-        } field;
-    } CR2;
-    union { // Control register 3
-        volatile uint32_t reg;
+            volatile uint32_t : 17;      // Reserved
+        } CR2_b;
+    };
+    union {                    // Control register 3
+        volatile uint32_t CR3; // Control register 3 (read/write)
         struct {
             volatile uint32_t EIE : 1;    // Error interrupt enable
             volatile uint32_t IREN : 1;   // IrDA mode enable
@@ -98,17 +98,17 @@ struct uart {
             volatile uint32_t CTSE : 1;   // CTS enable
             volatile uint32_t CTSIE : 1;  // CTS interrupt enable
             volatile uint32_t ONEBIT : 1; // One bit sample method enable
-            volatile uint32_t RES : 20;   // Reserved
-        } field;
-    } CR3;
-    union { // Guard time and prescaler register
-        volatile uint32_t reg;
+            volatile uint32_t : 20;       // Reserved
+        } CR3_b;
+    };
+    union {                     // Guard time and prescaler register
+        volatile uint32_t GTPR; // Guard time and prescaler register (read/write)
         struct {
-            volatile uint32_t PSC : 8;  // Prescaler value
-            volatile uint32_t GT : 8;   // Guard time value
-            volatile uint32_t RES : 16; // Reserved
-        } field;
-    } GTPR;
+            volatile uint32_t PSC : 8; // Prescaler value
+            volatile uint32_t GT : 8;  // Guard time value
+            volatile uint32_t : 16;    // Reserved
+        } GTPR_b;
+    };
 };
 
 #define USART1 ((struct uart *)0x40011000)
