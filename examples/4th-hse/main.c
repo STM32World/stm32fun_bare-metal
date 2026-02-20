@@ -133,8 +133,11 @@ enum {
 
 void system_clock_init(void) {
 
-    // Enable FPU and Flash Latency (Keep original guide code here)
-    SCB->CPACR |= ((3UL << 10 * 2) | (3UL << 11 * 2));
+    // FPU shares the same clock as the core the following code just enables full access to it 
+    // 0b11(3) gives full access to the FPU 
+    // RM B3-613 B3-614
+    //SCB->CPACR |= ((3UL << 10 * 2) | (3UL << 11 * 2));
+    //Enable Flash Latency (Keep original guide code here)
     FLASH->ACR |= FLASH_LATENCY | BIT(8) | BIT(9);  // Flash latency, prefetch
 
     // Enable HSE
