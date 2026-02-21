@@ -9,20 +9,21 @@
 
 #include "rng.h"
 
+#include <stdio.h>
+
 void rng_init() {
 
     // Enable the RNG clock in the RCC
     RCC->AHB2ENR_b.RNGEN = 1; // Enable RNG clock
 
-    __asm__ volatile("nop"); // Short delay to ensure the clock is stable before accessing the RNG registers
+    (void)RCC->AHB2ENR;
+    __asm__ volatile("nop; nop; nop; nop");
 
     // Enable the RNG peripheral
-    RNG->CR |= BIT(0); // Enable RNG by setting the RNGEN bit (bit 0)
+    RNG->CR_b.RNGEN = 1; // Enable RNG by setting the RNGEN bit (bit 0)
 }
 
 uint32_t rng_get_random() {
-
-    RNG->CR_b.RNGEN = 1; // Ensure RNG is enabled
 
     // Wait until data is ready
     while (!RNG->SR_b.DRDY) {

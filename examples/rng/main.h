@@ -24,9 +24,10 @@ enum {
 
 enum {  // Run at 168 Mhz
     PLL_HSE = 16,
-    PLL_M = 8,
-    PLL_N = 168,
+    PLL_M = 16,
+    PLL_N = 336,
     PLL_P = 2,
+    PLL_Q = 7,
 };
 
 /* Miscellaneous calculations */

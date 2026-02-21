@@ -11,37 +11,44 @@
 
 void sysclock_init(void) {
 
-    // Enable FPU and Flash Latency (Keep original guide code here)
+    // Enable FPU
     SCB->CPACR |= ((3UL << 10 * 2) | (3UL << 11 * 2));
 
-    FLASH->ACR |= FLASH_LATENCY | BIT(8) | BIT(9); // Flash latency, prefetch
+    // 2. Flash Latency & Caches for 168MHz
+    FLASH->ACR_b.LATENCY = 5;
+    FLASH->ACR_b.PRFTEN = 1;
+    FLASH->ACR_b.ICEN = 1;
+    FLASH->ACR_b.DCEN = 1;
 
     // Enable HSE
-    RCC->CR |= BIT(16); // Set HSEON
-    while (!(RCC->CR & BIT(17)))
-        (void)0; // Wait for HSERDY
+    RCC->CR_b.HSEON = 1;
+    while (!RCC->CR_b.HSERDY) (void)0;
 
-    // AHB = /1, APB2 = /2 (84MHz), APB1 = /4 (42MHz)
-    RCC->CFGR |= (0 << 4) |                    // HPRE (AHB)
-                 (PPRE_BITS(APB2_PRE) << 13) | // PPRE2 (APB2)
-                 (PPRE_BITS(APB1_PRE) << 10);  // PPRE1 (APB1)
+    // Bus Prescalers: AHB /1, APB2 /2, APB1 /4
+    RCC->CFGR_b.HPRE = 0;
+    RCC->CFGR_b.PPRE2 = PPRE_BITS(APB2_PRE); // /2
+    RCC->CFGR_b.PPRE1 = PPRE_BITS(APB1_PRE); // /4
 
-    // Configure PLL
-    // Clear and set M, N, P, and importantly: Set Bit 22 to select HSE as source
-    RCC->PLLCFGR = (PLL_M << 0) | (PLL_N << 6) | (((PLL_P >> 1) - 1) << 16) | BIT(22);
+    // Configure Main PLL
+    RCC->PLLCFGR_b.PLLM = PLL_M;
+    RCC->PLLCFGR_b.PLLN = PLL_N;
+    RCC->PLLCFGR_b.PLLP = (PLL_P >> 1) - 1;
+    RCC->PLLCFGR_b.PLLSRC = 1; // Use HSE as PLL source
+    RCC->PLLCFGR_b.PLLQ = PLL_Q;
 
     // Enable PLL
-    RCC->CR |= BIT(24); // Set PLLON
-    while (!(RCC->CR & BIT(25)))
-        ; // Wait for PLLRDY
+    RCC->CR_b.PLLON = 1;
+    while (!RCC->CR_b.PLLRDY) (void)0;
 
     // Select PLL as System Clock
-    RCC->CFGR &= ~(uint32_t)3; // Clear SW bits
-    RCC->CFGR |= 2;            // Select PLL (0b10)
-    while ((RCC->CFGR & (3 << 2)) != (2 << 2))
-        (void)0; // Wait for SWS to indicate PLL
+    RCC->CFGR_b.SW = 2;
+    while (RCC->CFGR_b.SWS != 2) (void)0;
 
-    RCC->AHB1ENR |= BIT(0) | BIT(1) | BIT(2); // Enable clocks for GPIOA, GPIOB, GPIOC
+    // Enable Peripheral Clocks
+    RCC->AHB1ENR_b.GPIOAEN = 1;
+    RCC->AHB1ENR_b.GPIOBEN = 1;
+    RCC->AHB1ENR_b.GPIOCEN = 1;
+    
 }
 
 // vim: ts=4 sw=4 noexpandtab

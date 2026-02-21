@@ -14,11 +14,12 @@
 
 struct rng {
     union {
-        volatile uint32_t CR; // Control register
+        volatile uint32_t CR;
         struct {
-            volatile uint32_t RNGEN : 1; // Random number generator enable
-            volatile uint32_t IE : 1;    // Interrupt enable
-            volatile uint32_t : 30;      // Reserved
+            volatile uint32_t : 2;       // Bits 0-1: Reserved
+            volatile uint32_t RNGEN : 1; // Bit 2: RNG Enable
+            volatile uint32_t IE : 1;    // Bit 3: Interrupt Enable
+            volatile uint32_t : 28;      // Bits 4-31: Reserved
         } CR_b;
     };
     union {
@@ -27,9 +28,10 @@ struct rng {
             volatile uint32_t DRDY : 1; // Data ready
             volatile uint32_t CECS : 1; // Clock error current status
             volatile uint32_t SECS : 1; // Seed error current status
+            volatile uint32_t : 2;
             volatile uint32_t CEIS : 1; // Clock error interrupt status
             volatile uint32_t SEIS : 1; // Seed error interrupt status
-            volatile uint32_t : 27;     // Reserved
+            volatile uint32_t : 25; 
         } SR_b;
     };
     union {
