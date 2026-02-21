@@ -1,18 +1,18 @@
 /**
- * 
+ *
  * Utility macros and common includes for STM32F4xx microcontrollers.
- * 
+ *
  * Copyright (c) 2026 STM32World <lth@stm32world.com>
  * See LICENSE for details.
- * 
+ *
  */
 
 #ifndef __F4X_H
-#define __F4X_H 
+#define __F4X_H
 
-#include <stdlib.h>
+#include <stdbool.h>
 #include <stdint.h>
-#include <stdbool.h> 
+#include <stdlib.h>
 
 // Bit manipulation macros
 #define BIT(x) (1UL << (x))
@@ -22,12 +22,12 @@
 
 #define _weak __attribute__((weak))
 
-#include "scb.h"
-#include "rcc.h"
 #include "flash.h"
+#include "gpio.h"
+#include "rcc.h"
+#include "scb.h"
 #include "sysclock.h"
 #include "systick.h"
-#include "gpio.h"
-#include "uart.h" 
+#include "uart.h"
 
 #endif /* __F4X_H */

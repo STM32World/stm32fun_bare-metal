@@ -1,13 +1,10 @@
 /**
  *
- * Systick Blink 16 MHz HSE bare-metal STM32 example
+ * UART example
  *
- * This example demonstrates how to use the SysTick timer to create a simple LED blinking application
- * on an STM32 microcontroller running at 168 MHz with a 16 MHz external crystal (HSE).
- * The blue LED connected to pin C13 will toggle every 500 milliseconds.
- * The code initializes the system clock, configures the SysTick timer for 1 ms ticks,
- * and sets up the GPIO pin for the LED. The main loop checks the elapsed time and toggles
- * the LED state accordingly.
+ * In this example we will be building on the previous example by adding
+ * UART support for debugging. We will initialize USART1 to run at 2 Mbps,
+ * which is a good speed for a 168 MHz core clock.
  *
  * Copyright (c) 2026 STM32World <lth@stm32world.com>
  * See LICENSE for details.
