@@ -32,7 +32,6 @@ int main(void) {
     printf("Core clock: %d Hz\n", SYS_FREQUENCY);
     printf("APB1 clock: %d Hz\n", APB1_FREQUENCY);
     printf("APB2 clock: %d Hz\n", APB2_FREQUENCY);
-    printf("Starting main loop...\n");
 
     bool led_state = true;
     uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0;
