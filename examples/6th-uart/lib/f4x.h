@@ -14,6 +14,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "main.h"
+
 // Bit manipulation macros
 #define BIT(x) (1UL << (x))
 #define PIN(bank, num) ((((bank) - 'A') << 8) | (num))

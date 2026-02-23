@@ -7,7 +7,7 @@
  *
  */
 
-#include "sysclock.h"
+#include "sysclock.h" // UGLY but need the PLL settings from main.h
 
 void sysclock_init(void) {
 

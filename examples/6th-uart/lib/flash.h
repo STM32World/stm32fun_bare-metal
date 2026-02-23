@@ -10,7 +10,7 @@
 #ifndef __FLASH_H
 #define __FLASH_H
 
-#include <main.h>
+#include <f4x.h>
 
 // Flash peripheral structure
 struct flash {
