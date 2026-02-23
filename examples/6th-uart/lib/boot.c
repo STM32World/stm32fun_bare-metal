@@ -26,7 +26,6 @@ WEAK_DEF(usage_fault_handler);
 WEAK_DEF(svc_handler);
 WEAK_DEF(debug_mon_handler);
 WEAK_DEF(pendsv_handler);
-WEAK_DEF(systick_handler);
 
 // Peripheral Interrupts
 WEAK_DEF(wwdg_irq_handler);               // Window Watchdog
@@ -123,11 +122,8 @@ WEAK_DEF(dma2d_irq_handler);              // DMA2D
 
 // --- Startup code ---
 
-_weak int main(void) {
-    for (;;)
-        (void)0;
-}
-
+extern void systick_handler(void);
+extern int main(void);
 extern void _estack(void);
 
 __attribute__((naked, noreturn)) void _reset(void) {

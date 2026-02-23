@@ -26,6 +26,6 @@ void systick_init(uint32_t ticks) {
 }
 
 // Systick interrupt handler
-void systick_handler(void) {
+_weak void systick_handler(void) {
     ++s_ticks; // Will increase every 1 ms
 }
