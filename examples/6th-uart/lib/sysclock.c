@@ -52,4 +52,4 @@ void sysclock_init(void) {
     RCC->AHB1ENR_b.GPIOCEN = 1;
 }
 
-// vim: ts=4 sw=4 noexpandtab
+// vim: et ts=4 nowrap autoindent

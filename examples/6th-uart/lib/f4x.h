@@ -22,7 +22,6 @@
 
 #define _weak __attribute__((weak))
 
-#include "vectors.h"
 #include "flash.h"
 #include "gpio.h"
 #include "rcc.h"
@@ -30,5 +29,8 @@
 #include "sysclock.h"
 #include "systick.h"
 #include "uart.h"
+#include "vectors.h"
 
 #endif /* __F4X_H */
+
+// vim: et ts=4 nowrap autoindent

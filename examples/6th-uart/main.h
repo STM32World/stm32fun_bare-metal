@@ -45,4 +45,4 @@ enum {  // Run at 168 Mhz
 
 #endif /* __MAIN_H */
 
-// vim: et nowrap autoindent
+// vim: et ts=4 nowrap autoindent

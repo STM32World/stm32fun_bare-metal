@@ -36,3 +36,5 @@ inline void gpio_write(uint16_t pin, bool val) {
     struct gpio *gpio = GPIO(PINBANK(pin));
     gpio->BSRR = (1U << PINNO(pin)) << (val ? 0 : 16);
 }
+
+// vim: et ts=4 nowrap autoindent

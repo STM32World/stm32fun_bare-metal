@@ -82,4 +82,4 @@ int _write(int fd, char *ptr, int len) {
     return i;
 }
 
-// vim: set ts=4 sw=4 expandtab:
+// vim: et ts=4 nowrap autoindent

@@ -258,4 +258,4 @@ __attribute__((section(".vectors"))) void (*const tab[])(void) = {
     [106] = dma2d_irq_handler              // DMA2D
 };
 
-// vim: et nowrap autoindent:
+// vim: et ts=4 nowrap autoindent

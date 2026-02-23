@@ -9,13 +9,9 @@
 
 #include "f4x.h"
 
-_weak int main(void) {
-    // Default main does nothing - can be overridden by user
-}
-
-_weak void systick_handler(void) {
-    // Default handler does nothing - can be overridden by user
-}
+// extern declarations for main and systick_handler to avoid implicit declaration warnings
+extern int main(void);
+extern void systick_handler(void);
 
 // Startup code
 __attribute__((naked, noreturn)) void _reset(void) {  // Naked might cause a warning but is allowed in gcc

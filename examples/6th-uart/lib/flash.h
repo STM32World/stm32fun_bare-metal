@@ -91,3 +91,5 @@ struct flash {
 #define FLASH ((volatile struct flash *)0x40023C00)
 
 #endif /* __FLASH_H */
+
+// vim: et ts=4 nowrap autoindent

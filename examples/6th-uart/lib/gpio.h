@@ -246,3 +246,5 @@ void gpio_set_mode(uint16_t pin, uint8_t mode);
 void gpio_set_af(uint16_t pin, uint8_t af_num);
 
 #endif /* __GPIO_H */
+
+// vim: et ts=4 nowrap autoindent

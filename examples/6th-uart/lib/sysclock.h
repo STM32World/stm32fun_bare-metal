@@ -15,3 +15,5 @@
 void sysclock_init(void);
 
 #endif /* __SYSCLOCK_H */
+
+// vim: et ts=4 nowrap autoindent

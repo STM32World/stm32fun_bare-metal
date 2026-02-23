@@ -372,3 +372,5 @@ struct rcc {
 #define RCC ((struct rcc *)0x40023800)
 
 #endif /* __RCC_H */
+
+// vim: et ts=4 nowrap autoindent

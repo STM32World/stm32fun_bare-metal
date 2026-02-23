@@ -39,4 +39,4 @@ SECTIONS {
   _end = .;     /* for cmsis_gcc.h  */
 }
  
- 
+// vim: et ts=2 nowrap autoindent
