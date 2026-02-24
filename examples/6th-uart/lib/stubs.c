@@ -50,7 +50,7 @@ int _kill(int pid, int sig) {
 void _exit(int status) {
     (void)status;
     while (1)
-        ;
+        (void)0;
 }
 
 void *_sbrk(ptrdiff_t incr) {

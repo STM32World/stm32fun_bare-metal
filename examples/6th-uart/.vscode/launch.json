@@ -15,7 +15,7 @@
                 "target/stm32f4x.cfg" // Change to match your chip series
             ],
             "preLaunchTask": "build", // This maps to a task in tasks.json
-            "svdFile": "${workspaceFolder}/STM32F407.svd", // Optional: For peripheral register view
+            "svdFile": "${workspaceFolder}/stm32f407.svd", // Optional: For peripheral register view
             "liveWatch": {
                 "enabled": true,
                 "samplesPerSecond": 4
