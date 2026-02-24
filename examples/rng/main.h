@@ -37,6 +37,7 @@ enum {  // Run at 168 Mhz
 #define SYS_FREQUENCY ((PLL_HSE * PLL_N / PLL_M / PLL_P) * 1000000)
 #define APB2_FREQUENCY (SYS_FREQUENCY / APB2_PRE)
 #define APB1_FREQUENCY (SYS_FREQUENCY / APB1_PRE)
+#define CLK48 (PLL_HSE * PLL_N / PLL_M / PLL_Q * 1000000) // 48 MHz clock for USB, RNG, etc.
 
 // Helper to convert divisor (2, 4, 8, 16) to STM32 PPRE bits
 // If divisor is 1, return 0. Else, use the pattern (log2(div) + 3)

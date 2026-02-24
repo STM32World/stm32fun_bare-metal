@@ -32,9 +32,10 @@ int main(void) {
     uart_init(USART1, 2000000); // Initialize USART1 for debugging - 2000000 bps (2 Mbps) works nicely with 168 MHz core clock
 
     printf("\n\n\nSystem initialized.\n");
-    printf("Core clock: %d Hz\n", SYS_FREQUENCY);
-    printf("APB1 clock: %d Hz\n", APB1_FREQUENCY);
-    printf("APB2 clock: %d Hz\n", APB2_FREQUENCY);
+    printf("Core clock  : %9d Hz\n", SYS_FREQUENCY);
+    printf("APB1 clock  : %9d Hz\n", APB1_FREQUENCY);
+    printf("APB2 clock  : %9d Hz\n", APB2_FREQUENCY);
+    printf("48 MHz clock: %9d Hz\n", CLK48);
 
     printf("Enabling RNG...\n");
     rng_init(); // Initialize the random number generator
@@ -58,7 +59,7 @@ int main(void) {
 
             uint32_t random_value = rng_get_random(); // Get a random number from the RNG
 
-            printf("Tick: %lu (loop = %lu rnd = 0x%08lx)\n", now / 1000, loop_cnt, random_value);
+            printf("Tick: %5lu (loop = %lu rnd = 0x%08lx)\n", now / 1000, loop_cnt, random_value);
             loop_cnt = 0;
             next_tick = now + 1000; // Schedule next tick in 1000 ms
         }
