@@ -16,8 +16,7 @@ void rng_init() {
     // Enable the RNG clock in the RCC
     RCC->AHB2ENR_b.RNGEN = 1; // Enable RNG clock
 
-    //(void)RCC->AHB2ENR;
-    //__asm__ volatile("nop; nop; nop; nop");
+    (void)RCC->AHB2ENR;
 
     // Enable the RNG peripheral
     RNG->CR_b.RNGEN = 1; // Enable RNG by setting the RNGEN bit (bit 0)

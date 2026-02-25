@@ -15,14 +15,15 @@ void sysclock_init(void) {
     SCB->CPACR |= ((3UL << 10 * 2) | (3UL << 11 * 2));
 
     // 2. Flash Latency & Caches for 168MHz
-    FLASH->ACR_b.LATENCY = 5;
-    FLASH->ACR_b.PRFTEN = 1;
-    FLASH->ACR_b.ICEN = 1;
-    FLASH->ACR_b.DCEN = 1;
+    FLASH->ACR_b.LATENCY = 5; // 5 wait states for 168 MHz
+    FLASH->ACR_b.PRFTEN = 1;  // Enable prefetch
+    FLASH->ACR_b.ICEN = 1;    // Enable instruction cache
+    FLASH->ACR_b.DCEN = 1;    // Enable data cache
 
     // Enable HSE
     RCC->CR_b.HSEON = 1;
-    while (!RCC->CR_b.HSERDY) (void)0;
+    while (!RCC->CR_b.HSERDY)
+        (void)0;
 
     // Bus Prescalers: AHB /1, APB2 /2, APB1 /4
     RCC->CFGR_b.HPRE = 0;
@@ -38,17 +39,18 @@ void sysclock_init(void) {
 
     // Enable PLL
     RCC->CR_b.PLLON = 1;
-    while (!RCC->CR_b.PLLRDY) (void)0;
+    while (!RCC->CR_b.PLLRDY)
+        (void)0;
 
     // Select PLL as System Clock
     RCC->CFGR_b.SW = 2;
-    while (RCC->CFGR_b.SWS != 2) (void)0;
+    while (RCC->CFGR_b.SWS != 2)
+        (void)0;
 
     // Enable Peripheral Clocks
     RCC->AHB1ENR_b.GPIOAEN = 1;
     RCC->AHB1ENR_b.GPIOBEN = 1;
     RCC->AHB1ENR_b.GPIOCEN = 1;
-    
 }
 
 // vim: ts=4 sw=4 noexpandtab
