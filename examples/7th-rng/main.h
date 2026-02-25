@@ -23,10 +23,11 @@ enum {
 };
 
 enum {            // Run at 168 Mhz
-    PLL_HSE = 16, // HSE frequency in MHz
-    PLL_M = 8,    // PLL input frequency = HSE / PLL_M = 2 MHz (must be between 1 and 2 MHz)
-    PLL_N = 168,  // PLL VCO frequency = PLL input frequency * PLL_N = 336 MHz (must be between 192 and 432 MHz)
-    PLL_P = 2,    // PLL output frequency = PLL VCO frequency / PLL_P = 168 MHz (must be 2, 4, 6, or 8)
+    PLL_HSE = 16, // HSE frequency in MHz (16 MHz crystal)
+    PLL_M = 16,   // PLL input divider (16 MHz / 16 = 1 MHz)
+    PLL_N = 336,  // PLL multiplier (1 MHz * 336 = 336 MHz)
+    PLL_P = 2,    // PLL main system clock divider (336 MHz / 2 = 168 MHz for SYSCLK)
+    PLL_Q = 7,    // PLL48CLK divider (336 MHz / 7 = 48 MHz for USB, RNG, etc.)
 };
 
 /* Miscellaneous calculations */
@@ -35,6 +36,7 @@ enum {            // Run at 168 Mhz
 #define SYS_FREQUENCY ((PLL_HSE * PLL_N / PLL_M / PLL_P) * 1000000)
 #define APB2_FREQUENCY (SYS_FREQUENCY / APB2_PRE)
 #define APB1_FREQUENCY (SYS_FREQUENCY / APB1_PRE)
+#define CLK48 (PLL_HSE * PLL_N / PLL_M / PLL_Q * 1000000) // 48 MHz clock for USB, RNG, etc.
 
 // Helper to convert divisor (2, 4, 8, 16) to STM32 PPRE bits
 // If divisor is 1, return 0. Else, use the pattern (log2(div) + 3)
