@@ -16,6 +16,8 @@ void rng_init() {
     // Enable the RNG clock in the RCC
     RCC->AHB2ENR_b.RNGEN = 1; // Enable RNG clock
 
+    // RCC->APB2ENR_b.SYSCFGEN = 1; 
+
     (void)RCC->AHB2ENR;
 
     // Enable the RNG peripheral

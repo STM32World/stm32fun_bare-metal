@@ -23,7 +23,7 @@ int main(void) {
 
     uint16_t led = PIN('C', 13); // Blue LED
 
-    sysclock_init(); // Settings in main.h: 16 MHz HSE - core clock at 168 MHz and enable apb1 at 42 MHz, apb2 at 84 MHz
+    sysclock_init(); // Settings in main.h: 16 MHz HSE - core clock at 168 MHz and enable apb1 at 42 MHz, apb2 at 84 MHz and 48 MHz clock for USB, RNG, etc.
 
     systick_init(SYS_FREQUENCY / 1000); // 1ms SysTick
 
