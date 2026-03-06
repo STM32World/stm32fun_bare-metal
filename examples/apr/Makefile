@@ -14,14 +14,14 @@ LIBDIR   = $(ROOTDIR)/lib
 BUILD_DIR = build
 
 # Source Files
-SRCS = main.c $(wildcard $(LIBDIR)/*.c)
+SRCS = main.c $(wildcard $(LIBDIR)/*.c) $(wildcard sig25120/*.c)
 # Transform source paths to object paths in the build directory
 OBJS = $(addprefix $(BUILD_DIR)/, $(notdir $(SRCS:.c=.o)))
 # Transform object paths to dependency paths
 DEPS = $(OBJS:.o=.d)
 
 # Search paths for source files (so make can find them)
-vpath %.c . $(LIBDIR)
+vpath %.c . $(LIBDIR) sig25120
 
 # Compiler Flags
 # -MMD -MP: Generate dependency files
@@ -29,8 +29,8 @@ vpath %.c . $(LIBDIR)
 CFLAGS += -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16
 CFLAGS += -W -Wall -Wextra -Werror -Wundef -Wshadow -Wdouble-promotion \
           -Wformat-truncation -fno-common -Wconversion -fno-strict-aliasing \
-          -g3 -O0 -ffunction-sections -fdata-sections -MMD -MP \
-          -I. -I$(LIBDIR) 
+          -g3 -Og -ffunction-sections -fdata-sections -MMD -MP \
+          -I. -I$(LIBDIR) -Isig25120
 
 # Linker Flags
 LDFLAGS += -Tf4x.ld -nostartfiles -nostdlib --specs nano.specs \

@@ -1,19 +1,30 @@
 /**
  *
- * RNG example
+ * Signetics 25120 Simulator
  *
- * In this example we will be building on the previous example by adding
- * UART support for debugging. We will initialize USART1 to run at 2 Mbps,
- * which is a good speed for a 168 MHz core clock.
+ * In this example we will be simulating the Signetics 25120, the legendary WOM (Write-Only Memory) chip.
+ * The 25120 was a simple 128-byte memory chip that could only be written to, not read from.
+ * It was often used in early computers and video game consoles for storing data that didn't need to be
+ * read back, such as color palettes or sound data.
+ *
+ * It is blindingly fast and you can write massive amounts of data to it.
  *
  * Copyright (c) 2026 STM32World <lth@stm32world.com>
  * See LICENSE for details.
  *
  */
 
+#define WOM_SIZE (1 * 1024 * 1024 * 1024) // Define the size of our simulated WOM chip
+
 #include "main.h" // Main header contains config and common includes
 
 #include <stdio.h>
+
+#include "sig25120.h" // Include the header for our Signetics 25120 Library
+
+sig25120_handler sig25120; // Create an instance of the handler for the 25120 simulator
+
+uint8_t buffer[1024]; // 1 kB Buffer to hold data to write to the 25120
 
 // Main function
 int main(void) {
@@ -34,11 +45,16 @@ int main(void) {
     printf("APB2 clock  : %9d Hz\n", APB2_FREQUENCY);
     printf("48 MHz clock: %9d Hz\n", CLK48);
 
-    printf("Starting RNG\n");
-    rng_init(); // Initialize the RNG
+    // Fill the buffer with some data to write to the 25120
+    for (uint16_t i = 0; i < sizeof(buffer); ++i) {
+        buffer[i] = (uint8_t)(i % 256); // Just fill it with a pattern
+    }
+
+    // Initialize the 25120 simulator with a max size of 128 bytes
+    sig25120_init(&sig25120, WOM_SIZE);
 
     bool led_state = true;
-    uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0;
+    uint32_t now = 0, next_blink = 500, next_tick = 1000, next_test = 10000, loop_cnt = 0;
 
     for (;;) { // Super loop
 
@@ -52,12 +68,22 @@ int main(void) {
 
         if (now >= next_tick) {
 
-            uint32_t random_value = rng_get_random(); // Get a random number from the RNG
-
-            printf("Tick: %7lu ( loop = %lu rnd = 0x%08lx )\n", now / 1000, loop_cnt, random_value);
+            printf("Tick: %7lu ( loop = %lu  )\n", now / 1000, loop_cnt);
 
             loop_cnt = 0;
             next_tick = now + 1000; // Schedule next tick in 1000 ms
+        }
+
+        if (now >= next_test) {
+
+            uint32_t written = 0;
+            // Write the buffer to the 25120 at address 0
+            uint32_t t = s_ticks;
+            for (uint32_t i = 0; i < (WOM_SIZE / 1024); ++i) { // Fill the entire WOM chip with our buffer in 1 kB chunks
+                written += (uint32_t)sig25120_write(&sig25120, (int) i * 1024, buffer, sizeof(buffer));
+            }
+            printf("Wrote %ld bytes to the 25120 in %ld ms.\n", written, s_ticks - t);
+            next_test = now + 10000; // Schedule next test in 10 seconds
         }
 
         ++loop_cnt; // Just a counter to show how many times the loop runs between ticks
