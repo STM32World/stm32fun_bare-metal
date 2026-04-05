@@ -9,7 +9,8 @@
 
 #include "systick.h"
 
-// Global tick counter (in milliseconds)
+// Global tick counter (in milliseconds).  The tick count will roll
+// over after ~49 days, but that's not a problem for our purposes.
 volatile uint32_t s_ticks = 0;
 
 // Initialize SysTick timer to generate interrupts every 'ticks' clock cycles

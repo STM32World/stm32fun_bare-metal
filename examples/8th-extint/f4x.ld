@@ -10,8 +10,9 @@
 ENTRY(_reset);                                   /* entry point */
 
 MEMORY {
-  flash(rx) : ORIGIN = 0x08000000, LENGTH = 512k
-  sram(rwx) : ORIGIN = 0x20000000, LENGTH = 92k  /* remaining 64k in a separate address space */
+  flash  (rx)  : ORIGIN = 0x08000000, LENGTH = 512k
+  ccmram (xrw) : ORIGIN = 0x10000000, LENGTH = 64K
+  sram   (rwx) : ORIGIN = 0x20000000, LENGTH = 128k 
 }
 
 _estack     = ORIGIN(sram) + LENGTH(sram);       /* stack points to end of SRAM */
@@ -28,6 +29,17 @@ SECTIONS {
     _edata = .;                                  /* .data section end */
   } > sram AT > flash
   _sidata = LOADADDR(.data);
+
+  .ccmram : {
+    . = ALIGN(4);
+    _sccmram = .;       /* create a global symbol at ccmram start */
+    *(.ccmram)
+    *(.ccmram*)
+
+    . = ALIGN(4);
+    _eccmram = .;       /* create a global symbol at ccmram end */
+  } >ccmram AT> flash
+  _siccmram = LOADADDR(.ccmram);
 
   .bss : {
     _sbss = .;                                   /* .bss section start */
