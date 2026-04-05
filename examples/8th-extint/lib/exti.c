@@ -18,16 +18,16 @@
 void exti_init(uint16_t pin, uint8_t falling, uint8_t rising) {
 
     uint32_t pin_no = (uint32_t)PINNO(pin);
-    uint32_t bank   = (uint32_t)PINBANK(pin);
+    uint32_t bank = (uint32_t)PINBANK(pin);
 
     // Enable SYSCFG Clock
-    RCC->APB2ENR_b.SYSCFGEN = 1;
+    RCC->APB2ENR_b.SYSCFGEN = 1; // SYSCFG is on APB2 bus
 
     // Route the specific GPIO Bank to the EXTI Line
     // Each EXTICR register handles 4 pins (4 bits per pin)
-    uint32_t icr_idx = pin_no >> 2;          // e.g., Pin 15 / 4 = index 3
-    uint32_t shift   = (pin_no & 0x03) << 2; // e.g., (15 % 4) * 4 = shift 12
-    
+    uint32_t icr_idx = pin_no >> 2;        // e.g., Pin 15 / 4 = index 3
+    uint32_t shift = (pin_no & 0x03) << 2; // e.g., (15 % 4) * 4 = shift 12
+
     // Clear 4 bits and set them to the bank index (A=0, B=1, C=2...)
     SYSCFG->EXTICR[icr_idx] &= ~((uint32_t)0x0FU << shift);
     SYSCFG->EXTICR[icr_idx] |= (bank << shift);
@@ -38,7 +38,7 @@ void exti_init(uint16_t pin, uint8_t falling, uint8_t rising) {
     } else {
         EXTI->RTSR &= ~BIT(pin_no);
     }
-    
+
     if (falling) {
         EXTI->FTSR |= BIT(pin_no);
     } else {

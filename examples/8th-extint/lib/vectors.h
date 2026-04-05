@@ -10,9 +10,7 @@
 #ifndef VECTORS_H
 #define VECTORS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+// Forward prototype declarations of all interrupt handlers
 
 // Standard System Exceptions
 void nmi_handler(void);
@@ -118,8 +116,6 @@ void lcd_tft_irq_handler(void);
 void lcd_tft_err_irq_handler(void);
 void dma2d_irq_handler(void);
 
-#ifdef __cplusplus
-}
-#endif
-
 #endif // VECTORS_H
+
+// vim: et ts=4 nowrap autoindent

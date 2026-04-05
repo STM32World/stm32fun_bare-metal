@@ -24,18 +24,18 @@
 
 #define _weak __attribute__((weak))
 
-#include "syscfg.h"
-#include "nvic.h"
 #include "exti.h"
 #include "flash.h"
 #include "gpio.h"
+#include "nvic.h"
 #include "rcc.h"
+#include "rng.h"
 #include "scb.h"
+#include "syscfg.h"
 #include "sysclock.h"
 #include "systick.h"
 #include "uart.h"
 #include "vectors.h"
-#include "rng.h"
 
 #endif /* __F4X_H */
 
