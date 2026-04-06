@@ -1,22 +1,17 @@
 /**
  *
- * External Interrupt example
+ * Timer interrupt example for STM32F407.
  *
- * In this example we will enable external interrupt on pin PC15.
- *
- * On Streamline MCU STM32F407, PC15 is connected to the button controlling
- * boot0.  By default, the pin is active low, so when button is pressed,
- * the pin will be pulled high.
- * When the button state changes, we will print the new state to the console.
+ * This example demonstrates how to set up a timer interrupt using TIM2 and an external interrupt
+ * on pin PC15.
  *
  * Copyright (c) 2026 STM32World <lth@stm32world.com>
  * See LICENSE for details.
  *
  */
 
-#include "main.h" // Main header contains config and common includes
-
-#include <stdio.h>
+#include "main.h"  // Main header contains config and common includes
+#include <stdio.h> // For printf
 
 volatile uint8_t btn_changed = 0; // Flag to indicate button state change
 volatile uint8_t btn_state = 0;   // Current state of the button (0 or 1)
@@ -39,13 +34,16 @@ int main(void) {
 
     exti_init(btn, 1, 1); // Enable both rising and falling edge triggers for the button pin
 
-    timer_setup_interrupt(TIMER2, 10, 28); // Setup TIM2 to generate an interrupt every 0.01 second (100 ms) - IRQ number 28 for TIM2
+    timer_setup_interrupt(TIMER2, 10000, 28); // Setup TIM2 to generate an interrupt every 0.001 second (1 ms) - IRQ number 28 for TIM2
+    timer_enable(TIMER2);                     // Start the timer
 
     printf("\n\n\nSystem initialized.\n");
-    printf("Core clock  : %9d Hz\n", SYS_FREQUENCY);
-    printf("APB1 clock  : %9d Hz\n", APB1_FREQUENCY);
-    printf("APB2 clock  : %9d Hz\n", APB2_FREQUENCY);
-    printf("48 MHz clock: %9d Hz\n", CLK48);
+    printf("Core clock       : %9d Hz\n", SYS_FREQUENCY);
+    printf("APB1 clock       : %9d Hz\n", APB1_FREQUENCY);
+    printf("APB2 clock       : %9d Hz\n", APB2_FREQUENCY);
+    printf("APB1 timer clock : %9d Hz\n", TIM_APB1_FREQ);
+    printf("APB2 timer clock : %9d Hz\n", TIM_APB2_FREQ);
+    printf("48 MHz clock     : %9d Hz\n", CLK48);
 
     bool led_state = true;
     uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0;

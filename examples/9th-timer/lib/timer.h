@@ -176,9 +176,12 @@ struct timer {
 #define TIMER3 ((volatile struct timer *)0x40000400)
 #define TIMER4 ((volatile struct timer *)0x40000800)
 #define TIMER5 ((volatile struct timer *)0x40000C00)
-#define TIMER6 ((volatile struct timer *)0x40001000) // Basic
-#define TIMER7 ((volatile struct timer *)0x40001400) // Basic
+#define TIMER6 ((volatile struct timer *)0x40001000) // Basic timer, no capture/compare
+#define TIMER7 ((volatile struct timer *)0x40001400) // Basic timer, no capture/compare
 #define TIMER8 ((volatile struct timer *)0x40010400)
+#define TIMER9 ((volatile struct timer *)0x40014000)
+#define TIMER10 ((volatile struct timer *)0x40014400)
+#define TIMER11 ((volatile struct timer *)0x40014800)
 
 // Helper Enums
 enum {
@@ -198,3 +201,5 @@ void timer_enable(volatile struct timer *tim);
 void timer_disable(volatile struct timer *tim);
 
 #endif /* __TIMER_H */
+
+// vim: ts=4 et nowrap
