@@ -29,7 +29,7 @@ vpath %.c . $(LIBDIR)
 CFLAGS += -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16
 CFLAGS += -W -Wall -Wextra -Werror -Wundef -Wshadow -Wdouble-promotion \
           -Wformat-truncation -fno-common -Wconversion -fno-strict-aliasing \
-          -g3 -O0 -ffunction-sections -fdata-sections -MMD -MP \
+          -g3 -Og -ffunction-sections -fdata-sections -MMD -MP \
           -I. -I$(LIBDIR) 
 
 # Linker Flags

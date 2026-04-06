@@ -1,6 +1,6 @@
 /**
  *
- * Systick Blink 16 MHz HSE bare-metal STM32 example
+ * Configuration and common includes for STM32F4 examples
  *
  * This file contains the project configuration and common includes for the Systick Blink example.
  *

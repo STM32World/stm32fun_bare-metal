@@ -4,6 +4,11 @@
  *
  * In this example we will enable external interrupt on pin PC15.
  *
+ * On Streamline MCU STM32F407, PC15 is connected to the button controlling
+ * boot0.  By default, the pin is active low, so when button is pressed,
+ * the pin will be pulled high.
+ * When the button state changes, we will print the new state to the console.
+ *
  * Copyright (c) 2026 STM32World <lth@stm32world.com>
  * See LICENSE for details.
  *
@@ -42,9 +47,14 @@ int main(void) {
     bool led_state = true;
     uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0;
 
-    for (;;) { // Super loop
+    while (1) { // Super loop
 
         now = s_ticks;
+
+        if (btn_changed) {
+            printf("Button state changed: %d\n", btn_state);
+            btn_changed = 0; // Clear the flag
+        }
 
         if (now >= next_blink) {
             gpio_write(led, led_state); // Toggle LED
@@ -58,11 +68,6 @@ int main(void) {
 
             loop_cnt = 0;
             next_tick = now + 1000; // Schedule next tick in 1000 ms
-        }
-
-        if (btn_changed) {
-            printf("Button state changed: %d\n", btn_state);
-            btn_changed = 0; // Clear the flag
         }
 
         ++loop_cnt; // Just a counter to show how many times the loop runs between ticks
