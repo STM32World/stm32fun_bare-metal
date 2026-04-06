@@ -30,9 +30,11 @@ int main(void) {
 
     uart_init(USART1, 2000000); // Initialize USART1 for debugging - 2000000 bps (2 Mbps) works nicely with 168 MHz core clock
 
-    timer_setup_interrupt(TIMER2, 2, 28); // Setup TIM2 to generate an interrupt every 0.01 second (10 ms) - IRQ number 28 for TIM2
-    timer_enable(TIMER2);                 // Start the timer
+    // Deal with timer and timer interrupt
+    timer_setup_interrupt(TIMER2, 100000, 28); // Setup TIM2 to generate an interrupt every 0.01 second (10 ms) - IRQ number 28 for TIM2
+    timer_enable(TIMER2);                      // Start the timer
 
+    // Deal with the external GPIO interrupt
     exti_init(btn, 1, 1); // Enable both rising and falling edge triggers for the button pin
 
     printf("\n\n\nSystem initialized.\n");
@@ -44,7 +46,7 @@ int main(void) {
     bool led_state = true;
     uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0;
 
-    for (;;) { // Super loop
+    while (1) { // Super loop
 
         now = s_ticks;
 
@@ -75,10 +77,10 @@ int main(void) {
 
 // Timer 2 interrupt handler
 void tim2_irq_handler(void) {
-    if (TIMER2->SR_b.UIF) {
-        TIMER2->SR_b.UIF = 0; // Clear flag
-        ++tim_cnt;            // Increment timer counter
-    }
+    // if (TIMER2->SR_b.UIF) { // We can "probably" safely ignore this
+    TIMER2->SR_b.UIF = 0; // Clear flag
+    ++tim_cnt;            // Increment timer counter
+    //}
 }
 
 // External interrupt handler for pin PC15
