@@ -106,54 +106,54 @@ struct timer {
         volatile uint32_t CCMR1;
         struct {
             // Output Compare Mode (simplification)
-            volatile uint32_t CC1S : 2;
-            volatile uint32_t OC1FE : 1;
-            volatile uint32_t OC1PE : 1;
-            volatile uint32_t OC1M : 3;
-            volatile uint32_t OC1CE : 1;
-            volatile uint32_t CC2S : 2;
-            volatile uint32_t OC2FE : 1;
-            volatile uint32_t OC2PE : 1;
-            volatile uint32_t OC2M : 3;
-            volatile uint32_t OC2CE : 1;
+            volatile uint32_t CC1S : 2;  // Capture/Compare 1 selection
+            volatile uint32_t OC1FE : 1; // Output Compare 1 fast enable
+            volatile uint32_t OC1PE : 1; // Output Compare 1 preload enable
+            volatile uint32_t OC1M : 3;  // Output Compare 1 mode
+            volatile uint32_t OC1CE : 1; // Output Compare 1 clear enable
+            volatile uint32_t CC2S : 2;  // Capture/Compare 2 selection
+            volatile uint32_t OC2FE : 1; // Output Compare 2 fast enable
+            volatile uint32_t OC2PE : 1; // Output Compare 2 preload enable
+            volatile uint32_t OC2M : 3;  // Output Compare 2 mode
+            volatile uint32_t OC2CE : 1; // Output Compare 2 clear enable
             volatile uint32_t : 16;
         } CCMR1_b;
     };
     union { // CCMR2: Capture/Compare Mode Register 2 (Ch 3 & 4)
         volatile uint32_t CCMR2;
         struct {
-            volatile uint32_t CC3S : 2;
-            volatile uint32_t OC3FE : 1;
-            volatile uint32_t OC3PE : 1;
-            volatile uint32_t OC3M : 3;
-            volatile uint32_t OC3CE : 1;
-            volatile uint32_t CC4S : 2;
-            volatile uint32_t OC4FE : 1;
-            volatile uint32_t OC4PE : 1;
-            volatile uint32_t OC4M : 3;
-            volatile uint32_t OC4CE : 1;
+            volatile uint32_t CC3S : 2;  // Capture/Compare 3 selection
+            volatile uint32_t OC3FE : 1; // Output Compare 3 fast enable
+            volatile uint32_t OC3PE : 1; // Output Compare 3 preload enable
+            volatile uint32_t OC3M : 3;  // Output Compare 3 mode
+            volatile uint32_t OC3CE : 1; // Output Compare 3 clear enable
+            volatile uint32_t CC4S : 2;  // Capture/Compare 4 selection
+            volatile uint32_t OC4FE : 1; // Output Compare 4 fast enable
+            volatile uint32_t OC4PE : 1; // Output Compare 4 preload enable
+            volatile uint32_t OC4M : 3;  // Output Compare 4 mode
+            volatile uint32_t OC4CE : 1; // Output Compare 4 clear enable
             volatile uint32_t : 16;
         } CCMR2_b;
     };
     union { // CCER: Capture/Compare Enable Register
         volatile uint32_t CCER;
         struct {
-            volatile uint32_t CC1E : 1;
-            volatile uint32_t CC1P : 1;
-            volatile uint32_t CC1NE : 1;
-            volatile uint32_t CC1NP : 1;
-            volatile uint32_t CC2E : 1;
-            volatile uint32_t CC2P : 1;
-            volatile uint32_t CC2NE : 1;
-            volatile uint32_t CC2NP : 1;
-            volatile uint32_t CC3E : 1;
-            volatile uint32_t CC3P : 1;
-            volatile uint32_t CC3NE : 1;
-            volatile uint32_t CC3NP : 1;
-            volatile uint32_t CC4E : 1;
-            volatile uint32_t CC4P : 1;
-            volatile uint32_t CC4NE : 1;
-            volatile uint32_t CC4NP : 1;
+            volatile uint32_t CC1E : 1;  // Capture/Compare 1 output enable
+            volatile uint32_t CC1P : 1;  // Capture/Compare 1 output polarity
+            volatile uint32_t CC1NE : 1; // Capture/Compare 1 complementary output enable
+            volatile uint32_t CC1NP : 1; // Capture/Compare 1 complementary output polarity
+            volatile uint32_t CC2E : 1;  // Capture/Compare 2 output enable
+            volatile uint32_t CC2P : 1;  // Capture/Compare 2 output polarity
+            volatile uint32_t CC2NE : 1; // Capture/Compare 2 complementary output enable
+            volatile uint32_t CC2NP : 1; // Capture/Compare 2 complementary output polarity
+            volatile uint32_t CC3E : 1;  // Capture/Compare 3 output enable
+            volatile uint32_t CC3P : 1;  // Capture/Compare 3 output polarity
+            volatile uint32_t CC3NE : 1; // Capture/Compare 3 complementary output enable
+            volatile uint32_t CC3NP : 1; // Capture/Compare 3 complementary output polarity
+            volatile uint32_t CC4E : 1;  // Capture/Compare 4 output enable
+            volatile uint32_t CC4P : 1;  // Capture/Compare 4 output polarity
+            volatile uint32_t CC4NE : 1; // Capture/Compare 4 complementary output enable
+            volatile uint32_t CC4NP : 1; // Capture/Compare 4 complementary output polarity
             volatile uint32_t : 16;
         } CCER_b;
     };

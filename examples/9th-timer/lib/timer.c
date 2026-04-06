@@ -1,7 +1,9 @@
 /**
  *
  * Generic Timer implementation for STM32F407.
- * * Includes address-based clock detection and interrupt setup.
+ *
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
  *
  */
 
@@ -9,45 +11,61 @@
 
 /**
  * Internal helper to enable the clock and return the frequency.
- * On STM32F407:
- * APB1 base is 0x40000000. RCC_APB1ENR is at RCC_BASE + 0x40.
- * APB2 base is 0x40010000. RCC_APB2ENR is at RCC_BASE + 0x44.
  */
 static uint32_t _timer_enable_and_get_clock(volatile struct timer *tim) {
 
-    uintptr_t addr = (uintptr_t)tim;
+    uint32_t freq = 0; // Return frequency in Hz - 0 if invalid timer
 
-    // Using raw addresses for RCC to keep it standalone
-    volatile uint32_t *rcc_apb1enr = (uint32_t *)(0x40023800 + 0x40);
-    volatile uint32_t *rcc_apb2enr = (uint32_t *)(0x40023800 + 0x44);
-
-    // APB2 Timers
-    if (addr >= 0x40010000 && addr <= 0x40015000) {
-        // Map address to RCC Bit
-        if (addr == 0x40010000)
-            *rcc_apb2enr |= BIT(0); // TIM1
-        if (addr == 0x40010400)
-            *rcc_apb2enr |= BIT(1); // TIM8
-        if (addr == 0x40014000)
-            *rcc_apb2enr |= BIT(16); // TIM9
-        if (addr == 0x40014400)
-            *rcc_apb2enr |= BIT(17); // TIM10
-        if (addr == 0x40014800)
-            *rcc_apb2enr |= BIT(18); // TIM11
-
-        return TIM_APB2_FREQ;
+    switch ((uintptr_t)tim) {
+    case (uintptr_t)TIMER1:
+        RCC->APB2ENR_b.TIM1EN = 1;
+        freq = TIM_APB2_FREQ;
+        break;
+    case (uintptr_t)TIMER2:
+        RCC->APB1ENR_b.TIM2EN = 1;
+        freq = TIM_APB1_FREQ;
+        break;
+    case (uintptr_t)TIMER3:
+        RCC->APB1ENR_b.TIM3EN = 1;
+        freq = TIM_APB1_FREQ;
+        break;
+    case (uintptr_t)TIMER4:
+        RCC->APB1ENR_b.TIM4EN = 1;
+        freq = TIM_APB1_FREQ;
+        break;
+    case (uintptr_t)TIMER5:
+        RCC->APB1ENR_b.TIM5EN = 1;
+        freq = TIM_APB1_FREQ;
+        break;
+    case (uintptr_t)TIMER6:
+        RCC->APB1ENR_b.TIM6EN = 1;
+        freq = TIM_APB1_FREQ;
+        break;
+    case (uintptr_t)TIMER7:
+        RCC->APB1ENR_b.TIM7EN = 1;
+        freq = TIM_APB1_FREQ;
+        break;
+    case (uintptr_t)TIMER8:
+        RCC->APB2ENR_b.TIM8EN = 1;
+        freq = TIM_APB2_FREQ;
+        break;
+    case (uintptr_t)TIMER9:
+        RCC->APB2ENR_b.TIM9EN = 1;
+        freq = TIM_APB2_FREQ;
+        break;
+    case (uintptr_t)TIMER10:
+        RCC->APB2ENR_b.TIM10EN = 1;
+        freq = TIM_APB2_FREQ;
+        break;
+    case (uintptr_t)TIMER11:
+        RCC->APB2ENR_b.TIM11EN = 1;
+        freq = TIM_APB2_FREQ;
+        break;
+    default:
+        freq = 0; // Invalid timer
     }
 
-    // APB1 Timers
-    if (addr >= 0x40000000 && addr <= 0x40006000) {
-        // Bit 0=TIM2, 1=TIM3, 2=TIM4, 3=TIM5, 4=TIM6, 5=TIM7...
-        uint32_t bit = (addr - 0x40000000) / 0x400;
-        *rcc_apb1enr |= BIT(bit);
-
-        return TIM_APB1_FREQ;
-    }
-
-    return 0;
+    return freq;
 }
 
 /**

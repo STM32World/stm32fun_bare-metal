@@ -77,7 +77,7 @@ int main(void) {
 
 // Timer 2 interrupt handler
 void tim2_irq_handler(void) {
-    // if (TIMER2->SR_b.UIF) { // We can "probably" safely ignore this
+    // if (TIMER2->SR_b.UIF) { // We can "probably" safely ignore this as we only enabled the update interrupt
     TIMER2->SR_b.UIF = 0; // Clear flag
     ++tim_cnt;            // Increment timer counter
     //}

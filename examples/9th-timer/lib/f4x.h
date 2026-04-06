@@ -17,13 +17,14 @@
 #include "main.h"
 
 // Bit manipulation macros
-#define BIT(x) (1UL << (x))
-#define PIN(bank, num) ((((bank) - 'A') << 8) | (num))
-#define PINNO(pin) (pin & 255)
-#define PINBANK(pin) (pin >> 8)
+#define BIT(x) (1UL << (x))                            // Create a bitmask with bit x set
+#define PIN(bank, num) ((((bank) - 'A') << 8) | (num)) // Encode pin as (bank << 8) | num, e.g., PIN('C', 13) for PC13
+#define PINNO(pin) (pin & 255)                         // Extract pin number (0-15) from encoded pin
+#define PINBANK(pin) (pin >> 8)                        // Extract bank number (0 for A, 1 for B, etc.) from encoded pin
 
-#define _weak __attribute__((weak))
+#define _weak __attribute__((weak)) // Weak attribute for interrupt handlers that can be overridden
 
+// Include headers for various peripherals and system components
 #include "exti.h"
 #include "flash.h"
 #include "gpio.h"

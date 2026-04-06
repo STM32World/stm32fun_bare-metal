@@ -17,11 +17,13 @@
 
 /* System clock configuration for STM32F4 running at 168 MHz using HSE and PLL */
 
+// APB1 runs at 42 MHz (168 MHz / 4), APB2 runs at 84 MHz (168 MHz / 2)
 enum {
     APB1_PRE = 4, /* AHB clock / 4 */
     APB2_PRE = 2, /* AHB clock / 2 */
 };
 
+//
 enum {            // Run at 168 Mhz
     PLL_HSE = 16, // HSE frequency in MHz (16 MHz crystal)
     PLL_M = 16,   // PLL input divider (16 MHz / 16 = 1 MHz)
