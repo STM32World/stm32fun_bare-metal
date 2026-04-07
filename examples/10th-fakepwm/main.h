@@ -48,6 +48,9 @@ enum {            // Run at 168 Mhz
 // If divisor is 1, return 0. Else, use the pattern (log2(div) + 3)
 #define PPRE_BITS(div) ((div) == 1 ? 0 : (31 - __builtin_clz(div)) + 3)
 
+// Include the STM32F4xx header for register definitions and peripheral access.  We include it at the end of the main.h after defining
+// our configuration and helper macros, so that we can use those macros in our peripheral setup code without
+// worrying about the order of includes.
 #include "f4x.h"
 
 #endif /* __MAIN_H */

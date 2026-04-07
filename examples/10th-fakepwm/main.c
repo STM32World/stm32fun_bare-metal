@@ -1,8 +1,8 @@
 /**
  *
- * Pseudo-PWM example using TIM2 and SysTick for timing, with UART for debugging output. 
- * 
- * The blue LED on PC13 will be toggled based on a duty cycle that increments every 10 ms, 
+ * Pseudo-PWM example using TIM2 and SysTick for timing, with UART for debugging output.
+ *
+ * The blue LED on PC13 will be toggled based on a duty cycle that increments every 10 ms,
  * creating a fading effect. The program also prints the current tick count and duty cycle every second.
  *
  * Copyright (c) 2026 STM32World <lth@stm32world.com>
@@ -43,13 +43,17 @@ int main(void) {
     printf("48 MHz clock: %9d Hz\n", CLK48);
 
     uint32_t now = 0, next_update = 10, next_tick = 1000, loop_cnt = 0;
+    uint8_t duty_change = 1;
 
     while (1) { // Super loop
 
         now = s_ticks;
 
         if (now >= next_update) {
-            ++duty_cycle;
+            duty_cycle += duty_change; // Increment or decrement duty cycle
+            if (duty_cycle == 0 || duty_cycle == 100) {
+                duty_change = -duty_change; // Reverse direction at limits
+            }
             next_update = now + 10; // Schedule next toggle in 500 ms
         }
 
@@ -92,11 +96,15 @@ int _write(int fd, char *ptr, int len) {
         return -1;
     }
     while (*ptr && (i < len)) {
-        if (*ptr == '\n') {
+
+        if (*ptr == '\n') { // Convert newline to carriage return + newline for proper terminal formatting
             uart_write_char(USART1, '\r');
         }
+
         uart_write_char(USART1, *ptr);
+
         i++;
+
         ptr++;
     }
     return i;
