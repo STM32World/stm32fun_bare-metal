@@ -1,6 +1,9 @@
 /**
  *
- * First timer example
+ * Pseudo-PWM example using TIM2 and SysTick for timing, with UART for debugging output. 
+ * 
+ * The blue LED on PC13 will be toggled based on a duty cycle that increments every 10 ms, 
+ * creating a fading effect. The program also prints the current tick count and duty cycle every second.
  *
  * Copyright (c) 2026 STM32World <lth@stm32world.com>
  * See LICENSE for details.
@@ -11,33 +14,27 @@
 
 #include <stdio.h>
 
-volatile uint8_t btn_changed = 0; // Flag to indicate button state change
-volatile uint8_t btn_state = 0;   // Current state of the button (0 or 1)
-volatile uint32_t tim_cnt = 0;    // Timer tick counter
+const uint16_t led = PIN('C', 13); // Blue LED
+
+volatile uint8_t pwm_cnt = 0;
+volatile uint8_t duty_cycle = 0;
 
 /**
  * Main function - entry point of the program, system initialization and main loop
  */
 int main(void) {
 
-    uint16_t led = PIN('C', 13); // Blue LED
-    uint16_t btn = PIN('C', 15); // User button
-
     sysclock_init(); // Settings in main.h: 16 MHz HSE - core clock at 168 MHz and enable apb1 at 42 MHz, apb2 at 84 MHz
 
     systick_init(SYS_FREQUENCY / 1000); // 1ms SysTick
 
     gpio_set_mode(led, GPIO_MODE_OUTPUT); // Set blue LED to output mode
-    gpio_set_mode(btn, GPIO_MODE_INPUT);  // Set user button to input mode
 
     uart_init(USART1, 2000000); // Initialize USART1 for debugging - 2000000 bps (2 Mbps) works nicely with 168 MHz core clock
 
     // Deal with timer and timer interrupt
-    timer_setup_interrupt(TIMER2, 100000, 28); // Setup TIM2 to generate an interrupt every 0.01 second (10 ms) - IRQ number 28 for TIM2
-    timer_enable(TIMER2);                      // Start the timer
-
-    // Deal with the external GPIO interrupt
-    exti_init(btn, 1, 1); // Enable both rising and falling edge triggers for the button pin
+    timer_setup_interrupt(TIMER2, 25000, 28); // Setup TIM2 to generate an interrupt every 0.01 second (10 ms) - IRQ number 28 for TIM2
+    timer_enable(TIMER2);                     // Start the timer
 
     printf("\n\n\nSystem initialized.\n");
     printf("Core clock  : %9d Hz\n", SYS_FREQUENCY);
@@ -45,30 +42,23 @@ int main(void) {
     printf("APB2 clock  : %9d Hz\n", APB2_FREQUENCY);
     printf("48 MHz clock: %9d Hz\n", CLK48);
 
-    bool led_state = true;
-    uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0;
+    uint32_t now = 0, next_update = 10, next_tick = 1000, loop_cnt = 0;
 
     while (1) { // Super loop
 
         now = s_ticks;
 
-        if (now >= next_blink) {
-            gpio_write(led, led_state); // Toggle LED
-            led_state = !led_state;
-            next_blink = now + 500; // Schedule next toggle in 500 ms
+        if (now >= next_update) {
+            ++duty_cycle;
+            next_update = now + 10; // Schedule next toggle in 500 ms
         }
 
         if (now >= next_tick) {
 
-            printf("Tick: %7lu ( loop = %lu tim = %lu )\n", now / 1000, loop_cnt, tim_cnt);
+            printf("Tick: %7lu ( loop = %lu duty = %d )\n", now / 1000, loop_cnt, duty_cycle);
 
             loop_cnt = 0;
             next_tick = now + 1000; // Schedule next tick in 1000 ms
-        }
-
-        if (btn_changed) {
-            printf("Button state changed: %d\n", btn_state);
-            btn_changed = 0; // Clear the flag
         }
 
         ++loop_cnt; // Just a counter to show how many times the loop runs between ticks
@@ -81,21 +71,9 @@ int main(void) {
  * Timer 2 interrupt handler
  */
 void tim2_irq_handler(void) {
-    // if (TIMER2->SR_b.UIF) { // We can "probably" safely ignore this as we only enabled the update interrupt
-    TIMER2->SR_b.UIF = 0; // Clear flag
-    ++tim_cnt;            // Increment timer counter
-    //}
-}
-
-/**
- * External interrupt handler for pin PC15
- */
-void exti15_10_irq_handler(void) {
-    if (exti_get_pending(PIN('C', 15))) {    // Check if the interrupt is from pin PC15
-        btn_state = gpio_read(PIN('C', 15)); // Toggle button state
-        btn_changed = 1;                     // Set flag to indicate state change
-        exti_clear_pending(PIN('C', 15));    // Clear the interrupt pending bit
-    }
+    gpio_write(led, pwm_cnt >= duty_cycle); // Set LED state based on duty cycle
+    TIMER2->SR_b.UIF = 0;                   // Clear flag
+    ++pwm_cnt;                              // Increment timer counter
 }
 
 /**
