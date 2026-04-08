@@ -9,6 +9,11 @@
 
 #include "sysclock.h" // UGLY but need the PLL settings from main.h
 
+/**
+ * Initializes the system clock according to the configuration specified in main.h.
+ * This function sets up the PLL to achieve the desired system clock frequency, configures
+ * flash latency, and enables the necessary peripheral clocks.
+ */
 void sysclock_init(void) {
 
     // Enable FPU
@@ -34,7 +39,7 @@ void sysclock_init(void) {
     RCC->PLLCFGR_b.PLLM = PLL_M;
     RCC->PLLCFGR_b.PLLN = PLL_N;
     RCC->PLLCFGR_b.PLLP = (PLL_P >> 1) - 1;
-    RCC->PLLCFGR_b.PLLSRC = 1; // Use HSE as PLL source
+    RCC->PLLCFGR_b.PLLSRC = 1;   // Use HSE as PLL source
     RCC->PLLCFGR_b.PLLQ = PLL_Q; // For 48 MHz peripherals
 
     // Enable PLL

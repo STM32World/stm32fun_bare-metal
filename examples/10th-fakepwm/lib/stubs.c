@@ -1,3 +1,12 @@
+/**
+ * This file provides stub implementations of system calls that are typically required
+ * by the C standard library when running in a bare-metal environment.
+ *
+ * Copyright (c) 2026 STM32World <lth@stm32world.com>
+ * See LICENSE for details.
+ *
+ */
+
 #include <errno.h>
 #include <reent.h>
 #include <stddef.h>
