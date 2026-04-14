@@ -40,6 +40,7 @@ LDFLAGS += -Tf4x.ld -nostartfiles -nostdlib --specs nano.specs \
 
 all: $(BUILD_DIR)/firmware.bin
 	@echo "\n--- Build Summary ---"
+	$(SIZE) --format=SysV --radix=16 $(BUILD_DIR)/firmware.elf
 	$(SIZE) $(BUILD_DIR)/firmware.elf
 
 # Build Binary
@@ -58,8 +59,17 @@ $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir -p $@
 
-flash: $(BUILD_DIR)/firmware.bin
+stlflash: $(BUILD_DIR)/firmware.bin
 	st-flash --reset write $< 0x8000000
+
+stflash: $(BUILD_DIR)/firmware.bin
+	openocd -f interface/st-link.cfg -f target/stm32f4x.cfg -c "program $< verify reset exit"
+
+dapflash: $(BUILD_DIR)/firmware.bin
+	pyocd flash --target stm32f412xe --base-address 0x8000000 $<
+
+flash: $(BUILD_DIR)/firmware.elf
+	openocd -f interface/cmsis-dap.cfg -f target/stm32f4x.cfg -c "program $< verify reset exit"
 
 clean:
 	rm -rf $(BUILD_DIR)
