@@ -41,9 +41,9 @@ int main(void) {
     printf("APB2 clock  : %9d Hz\n", APB2_FREQUENCY);
     printf("48 MHz clock: %9d Hz\n", CLK48);
 
-    i2c_init(I2C1, 1000000); // Initialize I2C1 at 400 kHz
+    i2c_init(I2C1, 400000); // Initialize I2C1 at 400 kHz
 
-    printf("Scanning I2C bus...\n");
+    printf("\nScanning I2C bus...\n");
     printf("     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f\n");
 
     for (uint8_t i = 0; i < 128; i++) {
@@ -60,6 +60,8 @@ int main(void) {
         if ((i + 1) % 16 == 0)
             printf("\n");
     }
+
+    printf("\n");
 
     uint32_t now = 0, next_update = 10, next_tick = 1000, loop_cnt = 0;
     uint8_t duty_change = 1;

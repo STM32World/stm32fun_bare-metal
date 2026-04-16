@@ -4,6 +4,8 @@
 # Makefile for STM32F4 (Cortex-M4)
 #
 
+PROBE   = stlink
+
 CC      = arm-none-eabi-gcc
 OBJCOPY = arm-none-eabi-objcopy
 SIZE    = arm-none-eabi-size
@@ -59,17 +61,17 @@ $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 $(BUILD_DIR):
 	mkdir -p $@
 
-flash: $(BUILD_DIR)/firmware.bin
+stlflash: $(BUILD_DIR)/firmware.bin
 	st-flash --reset write $< 0x8000000
 
 stflash: $(BUILD_DIR)/firmware.bin
-	openocd -f interface/st-link.cfg -f target/stm32f4x.cfg -c "program $< verify reset exit"
+	openocd -f interface/stlink.cfg -f target/stm32f4x.cfg -c "program $< verify reset exit"
 
 dapflash: $(BUILD_DIR)/firmware.bin
 	pyocd flash --target stm32f412xe --base-address 0x8000000 $<
 
-xxxflash: $(BUILD_DIR)/firmware.elf
-	openocd -f interface/st-link.cfg -f target/stm32f4x.cfg -c "program $< verify reset exit"
+flash: $(BUILD_DIR)/firmware.elf
+	openocd -f interface/$(PROBE).cfg -f target/stm32f4x.cfg -c "program $< verify reset exit"
 
 clean:
 	rm -rf $(BUILD_DIR)
