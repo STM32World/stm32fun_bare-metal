@@ -1,6 +1,8 @@
 /**
  *
- * First timer example
+ * Designated Initializers example
+ *
+ * In this example we will use designated initializers to initialize an array.
  *
  * Copyright (c) 2026 STM32World <lth@stm32world.com>
  * See LICENSE for details.
@@ -11,13 +13,23 @@
 
 #include <stdio.h>
 
+typedef enum {
+    STR_START = 0,
+    STR_END = 1,
+    STR_DUMMY = 2,
+    STR_BTN_CHANGED = 3
+} str_index_t;
+
+const char *str[] = {
+    [STR_START] = "\n\n\nSystem initialized.\n",
+    [STR_END] = "End",
+    [STR_BTN_CHANGED] = "Button state changed: "
+};
+
 volatile uint8_t btn_changed = 0; // Flag to indicate button state change
 volatile uint8_t btn_state = 0;   // Current state of the button (0 or 1)
-volatile uint32_t tim_cnt = 0;    // Timer tick counter
 
-/**
- * Main function - entry point of the program, system initialization and main loop
- */
+// Main function
 int main(void) {
 
     uint16_t led = PIN('C', 13); // Blue LED
@@ -30,16 +42,11 @@ int main(void) {
     gpio_set_mode(led, GPIO_MODE_OUTPUT); // Set blue LED to output mode
     gpio_set_mode(btn, GPIO_MODE_INPUT);  // Set user button to input mode
 
-    uart_init(USART1, 921600); // Initialize USART1 for debugging - 921600 bps (2 Mbps) works nicely with 168 MHz core clock
+    uart_init(USART1, 921600); // Initialize USART1 for debugging - 921600 bps works nicely with 168 MHz core clock
 
-    // Deal with timer and timer interrupt
-    timer_setup_interrupt(TIMER2, 100000, 28); // Setup TIM2 to generate an interrupt every 0.01 second (10 ms) - IRQ number 28 for TIM2
-    timer_enable(TIMER2);                      // Start the timer
-
-    // Deal with the external GPIO interrupt
     exti_init(btn, 1, 1); // Enable both rising and falling edge triggers for the button pin
 
-    printf("\n\n\nSystem initialized.\n");
+    printf("%s", str[STR_START]);
     printf("Core clock  : %9d Hz\n", SYS_FREQUENCY);
     printf("APB1 clock  : %9d Hz\n", APB1_FREQUENCY);
     printf("APB2 clock  : %9d Hz\n", APB2_FREQUENCY);
@@ -52,6 +59,11 @@ int main(void) {
 
         now = s_ticks;
 
+        if (btn_changed) {
+            printf("%s%d\n", str[STR_BTN_CHANGED], btn_state);
+            btn_changed = 0; // Clear the flag
+        }
+
         if (now >= next_blink) {
             gpio_write(led, led_state); // Toggle LED
             led_state = !led_state;
@@ -60,15 +72,10 @@ int main(void) {
 
         if (now >= next_tick) {
 
-            printf("Tick: %7lu ( loop = %lu tim = %lu )\n", now / 1000, loop_cnt, tim_cnt);
+            printf("Tick: %7lu ( loop = %lu )\n", now / 1000, loop_cnt);
 
             loop_cnt = 0;
             next_tick = now + 1000; // Schedule next tick in 1000 ms
-        }
-
-        if (btn_changed) {
-            printf("Button state changed: %d\n", btn_state);
-            btn_changed = 0; // Clear the flag
         }
 
         ++loop_cnt; // Just a counter to show how many times the loop runs between ticks
@@ -77,19 +84,7 @@ int main(void) {
     return 0;
 }
 
-/**
- * Timer 2 interrupt handler
- */
-void tim2_irq_handler(void) {
-    // if (TIMER2->SR_b.UIF) { // We can "probably" safely ignore this as we only enabled the update interrupt
-    TIMER2->SR_b.UIF = 0; // Clear flag
-    ++tim_cnt;            // Increment timer counter
-    //}
-}
-
-/**
- * External interrupt handler for pin PC15
- */
+// External interrupt handler for pin PC15
 void exti15_10_irq_handler(void) {
     if (exti_get_pending(PIN('C', 15))) {    // Check if the interrupt is from pin PC15
         btn_state = gpio_read(PIN('C', 15)); // Toggle button state
@@ -98,9 +93,7 @@ void exti15_10_irq_handler(void) {
     }
 }
 
-/**
- * Write function for printf
- */
+// Send printf to uart1
 int _write(int fd, char *ptr, int len) {
     int i = 0;
 
