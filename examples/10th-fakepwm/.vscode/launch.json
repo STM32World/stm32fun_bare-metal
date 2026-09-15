@@ -11,7 +11,7 @@
             "servertype": "openocd",
             "device": "STM32F407VG", // Change to your specific chip part number
             "configFiles": [
-                "interface/stlink.cfg",
+                "interface/cmsis-dap.cfg",
                 "target/stm32f4x.cfg" // Change to match your chip series
             ],
             "preLaunchTask": "build", // This maps to a task in tasks.json

@@ -59,7 +59,9 @@ $(BUILD_DIR):
 	mkdir -p $@
 
 flash: $(BUILD_DIR)/firmware.bin
-	st-flash --reset write $< 0x8000000
+	openocd -f interface/cmsis-dap.cfg -f target/stm32f4x.cfg -c "program $< 0x08000000 verify reset exit"
+
+#	st-flash --reset write $< 0x8000000
 
 clean:
 	rm -rf $(BUILD_DIR)
