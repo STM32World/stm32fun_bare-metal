@@ -15,15 +15,33 @@
 
 typedef enum {
     STR_START = 0,
-    STR_END = 1,
-    STR_DUMMY = 2,
-    STR_BTN_CHANGED = 3
+    STR_BTN_CHANGED = 1,
+    STR_CORE_CLOCK = 2,
+    STR_APB1_CLOCK = 3,
+    STR_APB2_CLOCK = 4,
+    STR_48MHZ_CLOCK = 6,
+    STR_END = 19,
 } str_index_t;
 
+// const char *str[] = {
+//     "\n\n\nSystem initialized...\n",
+//     "End",
+//     "Button state changed: ",
+//     "Core clock  : ",
+//     "APB1 clock  : ",
+//     "APB2 clock  : ",
+//     "48 MHz clock: ",
+
+// };
+
 const char *str[] = {
-    [STR_START] = "\n\n\nSystem initialized.\n",
+    [STR_START] = "\n\n\nSystem initialized...\n",
+    [STR_48MHZ_CLOCK] = "48 MHz clock: ",
+    [STR_CORE_CLOCK] = "Core clock  : ",
+    [STR_APB1_CLOCK] = "APB1 clock  : ",
+    [STR_APB2_CLOCK] = "APB2 clock  : ",
+    [STR_BTN_CHANGED] = "Button state changed: ",
     [STR_END] = "End",
-    [STR_BTN_CHANGED] = "Button state changed: "
 };
 
 volatile uint8_t btn_changed = 0; // Flag to indicate button state change
@@ -46,14 +64,17 @@ int main(void) {
 
     exti_init(btn, 1, 1); // Enable both rising and falling edge triggers for the button pin
 
-    printf("%s", str[STR_START]);
-    printf("Core clock  : %9d Hz\n", SYS_FREQUENCY);
-    printf("APB1 clock  : %9d Hz\n", APB1_FREQUENCY);
-    printf("APB2 clock  : %9d Hz\n", APB2_FREQUENCY);
-    printf("48 MHz clock: %9d Hz\n", CLK48);
+    printf(str[STR_START]);
+
+    printf("%s%9d Hz\n", str[STR_CORE_CLOCK], SYS_FREQUENCY);
+    printf("%s%9d Hz\n", str[STR_APB1_CLOCK], APB1_FREQUENCY);
+    printf("%s%9d Hz\n", str[STR_APB2_CLOCK], APB2_FREQUENCY);
+    printf("%s%9d Hz\n", str[STR_48MHZ_CLOCK], CLK48);
 
     bool led_state = true;
-    uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0;
+    uint32_t now = 0, next_blink = 500, next_tick = 1000, loop_cnt = 0, size = 1000;
+
+    uint32_t *temp1 = NULL, *temp2 = NULL;
 
     while (1) { // Super loop
 
@@ -73,6 +94,20 @@ int main(void) {
         if (now >= next_tick) {
 
             printf("Tick: %7lu ( loop = %lu )\n", now / 1000, loop_cnt);
+
+            printf("Allocating %lu bytes of memory\n", size * sizeof(uint32_t));
+            temp2 = temp1;
+            temp1 = malloc(size * sizeof(uint32_t));
+            if (temp1 == NULL) {
+                printf("Memory allocation failed!\n");
+            } else {
+                printf("Memory allocation successful!\n");
+                size += 1000; // Increase size for next allocation
+            }
+            if (temp2 != NULL) {
+                printf("Freeing %lu bytes of memory\n", (size - 2000) * sizeof(uint32_t));
+                free(temp2);
+            }
 
             loop_cnt = 0;
             next_tick = now + 1000; // Schedule next tick in 1000 ms
