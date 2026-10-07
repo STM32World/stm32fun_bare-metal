@@ -20,7 +20,8 @@ volatile uint8_t pwm_cnt = 0;
 volatile uint8_t duty_cycle = 0;
 
 /**
- * Main function - entry point of the program, system initialization and main loop
+ * Main function - entry point of the program, system initialization
+ * and main loop
  */
 int main(void) {
 
@@ -30,7 +31,7 @@ int main(void) {
 
     gpio_set_mode(led, GPIO_MODE_OUTPUT); // Set blue LED to output mode
 
-    uart_init(USART1, 2000000); // Initialize USART1 for debugging - 2000000 bps (2 Mbps) works nicely with 168 MHz core clock
+    uart_init(USART1, 921600); // Initialize USART1 for debugging - 2000000 bps (2 Mbps) works nicely with 168 MHz core clock
 
     // Deal with timer and timer interrupt
     timer_setup_interrupt(TIMER2, 25000, 28); // Setup TIM2 to generate an interrupt every 0.01 second (10 ms) - IRQ number 28 for TIM2
@@ -51,7 +52,7 @@ int main(void) {
 
         if (now >= next_update) {
             duty_cycle += duty_change; // Increment or decrement duty cycle
-            if (duty_cycle == 0 || duty_cycle == 100) {
+            if (duty_cycle == 0 || duty_cycle == 200) {
                 duty_change = -duty_change; // Reverse direction at limits
             }
             next_update = now + 10; // Schedule next toggle in 500 ms
