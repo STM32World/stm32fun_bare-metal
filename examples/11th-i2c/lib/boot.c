@@ -10,6 +10,10 @@
 #include "f4x.h"
 
 // --- Default Handler ---
+/**
+ * Handler for every interrupt that has no handler of its own. Hangs, so an unexpected
+ * interrupt is easy to spot in the debugger (the stack frame shows where it came from).
+ */
 __attribute__((section(".text.default_handler"))) void default_handler(void) {
     for (;;)
         (void)0;
@@ -126,6 +130,11 @@ extern void systick_handler(void);
 extern int main(void);
 extern void _estack(void);
 
+/**
+ * Reset handler - the first code that runs. Zeroes .bss, copies the initial values of
+ * .data from flash to RAM, then calls main(). The stack pointer has already been
+ * loaded by the hardware from the first entry of the vector table (_estack).
+ */
 __attribute__((naked, noreturn)) void _reset(void) {
     extern long _sbss, _ebss, _sdata, _edata, _sidata;
 

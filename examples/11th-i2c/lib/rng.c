@@ -9,6 +9,10 @@
 
 #include "rng.h"
 
+/**
+ * Enable the hardware random number generator. The RNG is clocked from the 48 MHz
+ * PLL output (PLL_Q in main.h), so sysclock_init() must have run first.
+ */
 void rng_init(void) {
 
     // Enable the RNG clock in the RCC
@@ -20,6 +24,10 @@ void rng_init(void) {
     RNG->CR_b.RNGEN = 1; // Enable RNG by setting the RNGEN bit (bit 0)
 }
 
+/**
+ * Get a 32-bit random number, waiting until one is available (~40 PLL48 cycles).
+ * @return Random number, or 0xDEADBEEF if the RNG reports a clock error
+ */
 uint32_t rng_get_random(void) {
 
     // Wait until data is ready

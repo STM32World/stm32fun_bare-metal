@@ -9,6 +9,12 @@
 
 #include "uart.h"
 
+/**
+ * Initialize a USART/UART for 8N1 with the default pins for that instance (see the
+ * table below), and enable the transmitter and receiver.
+ * @param uart: USART1, USART2, USART3, UART4, UART5 or USART6
+ * @param baud: Baud rate, e.g. 115200
+ */
 void uart_init(volatile struct uart *uart, unsigned long baud) {
 
     uint8_t af = 7; // Default AF7 for USART1-3, will be overridden for UART4-5 and USART6
@@ -76,20 +82,37 @@ void uart_init(volatile struct uart *uart, unsigned long baud) {
     uart->CR1_b.UE = 1; // Enable USART
 }
 
+/**
+ * Check whether a received byte is waiting.
+ * @return Non-zero if a byte can be read with uart_read_byte()
+ */
 int uart_read_ready(volatile struct uart *uart) {
     return uart->SR_b.RXNE; // If RXNE bit is set, data is ready
 }
 
+/**
+ * Read the received byte. Call uart_read_ready() first - this does not wait.
+ * @return The byte
+ */
 uint8_t uart_read_byte(volatile struct uart *uart) {
     return (uint8_t)(uart->DR & 255);
 }
 
+/**
+ * Send one character, waiting until the transmit data register is free.
+ * @param ch: Character to send
+ */
 void uart_write_char(volatile struct uart *uart, char ch) {
     while (!uart->SR_b.TXE)
         (void)0; // Wait until TXE bit is set, indicating data register is empty
     uart->DR = (uint32_t)ch;
 }
 
+/**
+ * Send a buffer of bytes (blocking).
+ * @param buf: Bytes to send
+ * @param len: Number of bytes
+ */
 void uart_write_buf(volatile struct uart *uart, char *buf, size_t len) {
     while (len-- > 0)
         uart_write_char(uart, *buf++);

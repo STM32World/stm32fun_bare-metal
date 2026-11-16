@@ -2,7 +2,10 @@
  *
  * I2C example using a Streamline Storage EEPROM blade (1-4 x M24M01 on I2C1, PB6/PB7).
  *
- * At startup the I2C bus is scanned and the result printed as a table. Then:
+ * At startup the I2C driver frees the bus if a slave was left stuck mid-transfer (e.g. by a
+ * reset in the middle of a read) and the result is printed. The bus runs at 1 MHz, which
+ * is out of spec for the STM32F4 but well within the M24M01 rating (see lib/i2c.c).
+ * The bus is scanned and the result printed as a table. Then:
  *  - a boot counter stored at the start of the first EEPROM is read, incremented and
  *    written back, so it survives resets and power cycles
  *  - a full 256 byte page is filled with random data (from the RNG), written, read back
@@ -24,7 +27,7 @@ const uint16_t led = PIN('C', 13);    // Blue LED
 const uint16_t i2c_scl = PIN('B', 6); // I2C1 SCL (Streamline I2C1)
 const uint16_t i2c_sda = PIN('B', 7); // I2C1 SDA (Streamline I2C1)
 
-#define I2C_SPEED 100000 // 100 kHz standard mode - the M24M01 handles up to 1 MHz
+#define I2C_SPEED I2C_SPEED_FAST_PLUS // 1 MHz - out of spec for the F4, but the M24M01 handles it
 
 // M24M01: 128 kB, 256 byte pages, 2 byte memory address. Bit 16 of the memory address
 // goes in the LSB of the device address, so each chip answers on two addresses.
@@ -127,7 +130,7 @@ static void boot_count_test(void) {
     int rc;
 
     if ((rc = eeprom_read(EEPROM_BOOT_COUNT, (uint8_t *)&boot, sizeof(boot))) != I2C_OK) {
-        printf("Boot count read failed: %d\n", rc);
+        printf("Boot count read failed: %s\n", i2c_strerror(rc));
         return;
     }
 
@@ -139,7 +142,7 @@ static void boot_count_test(void) {
     ++boot.count;
 
     if ((rc = eeprom_write(EEPROM_BOOT_COUNT, (uint8_t *)&boot, sizeof(boot))) != I2C_OK) {
-        printf("Boot count write failed: %d\n", rc);
+        printf("Boot count write failed: %s\n", i2c_strerror(rc));
         return;
     }
 
@@ -164,7 +167,7 @@ static void page_test(void) {
     rc = eeprom_write(EEPROM_TEST_PAGE, wr, sizeof(wr));
     t_write = s_ticks - t_write;
     if (rc != I2C_OK) {
-        printf("Page write failed: %d\n", rc);
+        printf("Page write failed: %s\n", i2c_strerror(rc));
         return;
     }
 
@@ -172,7 +175,7 @@ static void page_test(void) {
     rc = eeprom_read(EEPROM_TEST_PAGE, rd, sizeof(rd));
     t_read = s_ticks - t_read;
     if (rc != I2C_OK) {
-        printf("Page read failed: %d\n", rc);
+        printf("Page read failed: %s\n", i2c_strerror(rc));
         return;
     }
 
@@ -206,10 +209,21 @@ int main(void) {
     printf("Core clock  : %9d Hz\n", SYS_FREQUENCY);
     printf("APB1 clock  : %9d Hz\n", APB1_FREQUENCY);
     printf("APB2 clock  : %9d Hz\n", APB2_FREQUENCY);
-    printf("I2C speed   : %9d Hz\n\n", I2C_SPEED);
+    printf("I2C speed   : %9d Hz\n", I2C_SPEED);
 
-    if (i2c_init(I2C1, i2c_scl, i2c_sda, I2C_SPEED) != I2C_OK)
-        printf("I2C init failed\n");
+    // i2c_init() first frees the bus in case a slave was left mid-transfer (e.g. by a
+    // reset in the middle of a read) and reports what it found
+    int rc = i2c_init(I2C1, i2c_scl, i2c_sda, I2C_SPEED);
+    int recovery = i2c_get_last_recovery(I2C1);
+    if (recovery == 0)
+        printf("I2C bus     : idle\n");
+    else if (recovery > 0)
+        printf("I2C bus     : was stuck - freed after %d clock(s)\n", recovery);
+    else
+        printf("I2C bus     : STUCK - %s\n", i2c_strerror(recovery));
+    if (rc != I2C_OK)
+        printf("I2C init failed: %s\n", i2c_strerror(rc));
+    printf("\n");
 
     i2c_scan(I2C1);
     printf("\n");

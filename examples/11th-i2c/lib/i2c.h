@@ -159,8 +159,22 @@ struct i2c {
 #define I2C_SR2_MSL BIT(0)  // Master mode
 #define I2C_SR2_BUSY BIT(1) // Bus busy
 
+// Control register 1 bits
+#define I2C_CR1_SWRST BIT(15) // Software reset
+
 // Clock control register bits
 #define I2C_CCR_FS BIT(15) // Fast mode
+
+// Bus speeds for i2c_init()
+#define I2C_SPEED_STANDARD 100000   // Standard mode (Sm)
+#define I2C_SPEED_FAST 400000       // Fast mode (Fm) - the official maximum for the STM32F4
+#define I2C_SPEED_FAST_PLUS 1000000 // Fast mode plus (Fm+) - OUT OF SPEC for the STM32F4, see i2c_init()
+
+// Fast mode plus: the peripheral only starts counting the SCL high time once it sees SCL
+// high, so rise time and input filtering stretch every period. This is subtracted from
+// the period when calculating the divider. Measured ~240 ns on a Streamline backplane
+// with the EEPROM blade (4k7 pull-ups) - a different bus may need a different value.
+#define I2C_FAST_PLUS_COMP_NS 240
 
 // Default timeout for each step of a transfer
 #define I2C_TIMEOUT_MS 10
@@ -172,10 +186,19 @@ enum {
     I2C_ERR_BUS = -2,     // Bus error or arbitration lost
     I2C_ERR_TIMEOUT = -3, // Flag did not appear in time (bus stuck?)
     I2C_ERR_PARAM = -4,   // Invalid argument (unknown instance, bad speed)
+    I2C_ERR_SCL_LOW = -5, // Bus recovery: SCL held low (slave stretching forever or short)
+    I2C_ERR_SDA_LOW = -6, // Bus recovery: SDA still low after 9 clocks (short or dead slave)
 };
 
+// Setup and bus recovery - see i2c.c for details
 int i2c_init(volatile struct i2c *i2c, uint16_t scl, uint16_t sda, uint32_t hz);
-void i2c_bus_recover(uint16_t scl, uint16_t sda);
+int i2c_bus_recover(uint16_t scl, uint16_t sda);
+int i2c_get_last_recovery(volatile struct i2c *i2c);
+uint32_t i2c_get_recovery_count(volatile struct i2c *i2c);
+const char *i2c_strerror(int rc);
+
+// Transfers. All return I2C_OK (0) or a negative I2C_ERR_* code; after a timeout or bus
+// error the driver frees the bus and re-initializes the peripheral automatically.
 bool i2c_probe(volatile struct i2c *i2c, uint8_t addr);
 int i2c_write(volatile struct i2c *i2c, uint8_t addr, const uint8_t *data, size_t len);
 int i2c_read(volatile struct i2c *i2c, uint8_t addr, uint8_t *data, size_t len);
