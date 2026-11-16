@@ -31,23 +31,9 @@ struct nvic {
 // The NVIC base address is defined by the ARM Cortex-M4 Architecture
 #define NVIC ((volatile struct nvic *)0xE000E100)
 
-/**
- * @brief Enables a specific IRQ
- * @param irq_n The IRQ number (0-239)
- */
+// Interrupt control - see nvic.c for details. IRQ numbers are in vectors.h.
 void nvic_enable_irq(uint8_t irq_n);
-
-/**
- * @brief Disables a specific IRQ
- * @param irq_n The IRQ number (0-239)
- */
 void nvic_disable_irq(uint8_t irq_n);
-
-/**
- * @brief Sets the priority for a specific IRQ
- * @param irq_n The IRQ number (0-239)
- * @param priority Priority level (0-15 for STM32F407)
- */
 void nvic_set_priority(uint8_t irq_n, uint8_t priority);
 
 #endif /* NVIC_H */

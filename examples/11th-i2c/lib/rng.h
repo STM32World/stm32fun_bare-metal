@@ -44,6 +44,13 @@ struct rng {
 
 #define RNG ((volatile struct rng *)0x50060800) // RNG base address
 
+// Status register flags. CEIS and SEIS are rc_w0 - clear with a plain write of ~flag.
+#define RNG_SR_DRDY BIT(0) // Data ready
+#define RNG_SR_CECS BIT(1) // Clock error current status
+#define RNG_SR_SECS BIT(2) // Seed error current status
+#define RNG_SR_CEIS BIT(5) // Clock error interrupt status
+#define RNG_SR_SEIS BIT(6) // Seed error interrupt status
+
 void rng_init(void);
 uint32_t rng_get_random(void);
 

@@ -99,6 +99,14 @@ uint8_t uart_read_byte(volatile struct uart *uart) {
 }
 
 /**
+ * Check whether the transmitter can take another character without waiting.
+ * @return Non-zero if uart_write_char() will not block
+ */
+int uart_write_ready(volatile struct uart *uart) {
+    return uart->SR_b.TXE;
+}
+
+/**
  * Send one character, waiting until the transmit data register is free.
  * @param ch: Character to send
  */
@@ -113,7 +121,7 @@ void uart_write_char(volatile struct uart *uart, char ch) {
  * @param buf: Bytes to send
  * @param len: Number of bytes
  */
-void uart_write_buf(volatile struct uart *uart, char *buf, size_t len) {
+void uart_write_buf(volatile struct uart *uart, const char *buf, size_t len) {
     while (len-- > 0)
         uart_write_char(uart, *buf++);
 }

@@ -94,6 +94,8 @@ enum {
     CRYP_IRQ = 79,                 // CRYP crypto
     HASH_RNG_IRQ = 80,             // Hash and Rng
     FPU_IRQ = 81,                  // FPU
+    // The rest do not exist on the STM32F405/407 (they are STM32F42x/43x/46x peripherals).
+    // Harmless here - those vectors are never taken.
     UART7_IRQ = 82,                // UART7
     UART8_IRQ = 83,                // UART8
     SPI4_IRQ = 84,                 // SPI4
@@ -201,6 +203,8 @@ void dcmi_irq_handler(void);
 void cryp_irq_handler(void);
 void hash_rng_irq_handler(void);
 void fpu_irq_handler(void);
+// The rest do not exist on the STM32F405/407 (they are STM32F42x/43x/46x peripherals).
+// Harmless here - those vectors are never taken.
 void uart7_irq_handler(void);
 void uart8_irq_handler(void);
 void spi4_irq_handler(void);

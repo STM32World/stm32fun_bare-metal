@@ -33,7 +33,7 @@ struct uart {
         volatile uint32_t DR; // Data register (read/write)
         struct {
             volatile uint32_t DR : 9;   // Data value
-            volatile uint32_t RES : 23; // Reserved
+            volatile uint32_t : 23;     // Reserved
         } DR_b;
     };
     union {                    // Baud rate register
@@ -120,9 +120,10 @@ struct uart {
 
 void uart_init(volatile struct uart *uart, unsigned long baud);
 int uart_read_ready(volatile struct uart *uart);
+uint8_t uart_read_byte(volatile struct uart *uart);
 int uart_write_ready(volatile struct uart *uart);
-void uart_write_char(volatile struct uart *uart, char c);
-void uart_write_buf(volatile struct uart *uart, char *buf, size_t len);
+void uart_write_char(volatile struct uart *uart, char ch);
+void uart_write_buf(volatile struct uart *uart, const char *buf, size_t len);
 
 #endif /* UART_H */
 

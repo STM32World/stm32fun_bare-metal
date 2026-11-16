@@ -46,7 +46,8 @@ struct syscfg {
             volatile uint32_t : 16;
         } EXTICR_b;
     };
-    volatile uint32_t CMPCR; // Compensation cell control register
+    uint32_t RESERVED0[2];   // 0x18, 0x1C: Reserved
+    volatile uint32_t CMPCR; // 0x20: Compensation cell control register
 };
 
 #define SYSCFG ((volatile struct syscfg *)0x40013800)

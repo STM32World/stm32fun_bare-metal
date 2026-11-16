@@ -49,7 +49,7 @@ struct scb {
             volatile uint32_t : 9;         // Reserved
             volatile uint32_t TBLOFF : 21; // Vector table base offset field
             volatile uint32_t : 2;         // Reserved
-        } field;
+        } VTOR_b;
     }; // 0x08
     union {
         volatile uint32_t AIRCR; // Application Interrupt and Reset Control Register

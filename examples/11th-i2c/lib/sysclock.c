@@ -7,20 +7,17 @@
  *
  */
 
-#include "sysclock.h" // UGLY but need the PLL settings from main.h
+#include "sysclock.h" // PLL settings come from main.h (through f4x.h)
 
 /**
- * Initializes the system clock according to the configuration specified in main.h.
- * This function sets up the PLL to achieve the desired system clock frequency, configures
- * flash latency, and enables the necessary peripheral clocks.
+ * Initialize the system clock according to the configuration in main.h: HSE crystal
+ * through the main PLL, flash wait states and caches for the core clock, and the AHB/APB
+ * prescalers. (The FPU is enabled in _reset and GPIO port clocks by the gpio functions.)
  */
 void sysclock_init(void) {
 
-    // Enable FPU
-    SCB->CPACR |= ((3UL << 10 * 2) | (3UL << 11 * 2));
-
-    // 2. Flash Latency & Caches for 168MHz
-    FLASH->ACR_b.LATENCY = 5;
+    // Flash wait states must be set BEFORE the clock goes up, plus prefetch and caches
+    FLASH->ACR_b.LATENCY = FLASH_LATENCY;
     FLASH->ACR_b.PRFTEN = 1;
     FLASH->ACR_b.ICEN = 1;
     FLASH->ACR_b.DCEN = 1;
@@ -51,11 +48,6 @@ void sysclock_init(void) {
     RCC->CFGR_b.SW = 2;
     while (RCC->CFGR_b.SWS != 2)
         (void)0;
-
-    // Enable Peripheral Clocks
-    RCC->AHB1ENR_b.GPIOAEN = 1;
-    RCC->AHB1ENR_b.GPIOBEN = 1;
-    RCC->AHB1ENR_b.GPIOCEN = 1;
 }
 
 // vim: et ts=4 nowrap autoindent

@@ -114,6 +114,8 @@ WEAK_DEF(dcmi_irq_handler);               // DCMI
 WEAK_DEF(cryp_irq_handler);               // CRYP crypto
 WEAK_DEF(hash_rng_irq_handler);           // Hash and Rng
 WEAK_DEF(fpu_irq_handler);                // FPU
+// The rest do not exist on the STM32F405/407 (they are STM32F42x/43x/46x peripherals).
+// Harmless here - those vectors are never taken.
 WEAK_DEF(uart7_irq_handler);              // UART7
 WEAK_DEF(uart8_irq_handler);              // UART8
 WEAK_DEF(spi4_irq_handler);               // SPI4
@@ -131,12 +133,25 @@ extern int main(void);
 extern void _estack(void);
 
 /**
- * Reset handler - the first code that runs. Zeroes .bss, copies the initial values of
- * .data from flash to RAM, then calls main(). The stack pointer has already been
- * loaded by the hardware from the first entry of the vector table (_estack).
+ * Reset handler - the first code that runs.
+ *
+ * The hardware has already loaded the stack pointer from the first entry of the vector
+ * table (_estack), so this can be an ordinary C function. (It used to be marked naked,
+ * but GCC only supports plain assembly in naked functions - C code in one works by luck.)
+ *
+ * 1. Enable the FPU before anything else. The code is built with -mfloat-abi=hard, so
+ *    the compiler may use FPU registers anywhere, and an FPU instruction while the FPU
+ *    is off is a UsageFault. The DSB/ISB make sure the change has taken effect before
+ *    the next instruction.
+ * 2. Zero .bss and copy the initial values of .data from flash to RAM. The linker script
+ *    aligns these sections to 4 bytes, so they can be handled a word at a time.
+ * 3. Call main().
  */
-__attribute__((naked, noreturn)) void _reset(void) {
+__attribute__((noreturn)) void _reset(void) {
     extern long _sbss, _ebss, _sdata, _edata, _sidata;
+
+    SCB->CPACR |= (3UL << 10 * 2) | (3UL << 11 * 2); // CP10 and CP11 (the FPU): full access
+    __asm__ volatile("dsb\n\tisb" ::: "memory");
 
     for (long *dst = &_sbss; dst < &_ebss; dst++)
         *dst = 0;
@@ -252,6 +267,8 @@ __attribute__((section(".vectors"))) void (*const tab[])(void) = {
     [95] = cryp_irq_handler,               // CRYP crypto
     [96] = hash_rng_irq_handler,           // Hash and Rng
     [97] = fpu_irq_handler,                // FPU
+    // The rest do not exist on the STM32F405/407 (they are STM32F42x/43x/46x peripherals).
+    // Harmless here - those vectors are never taken.
     [98] = uart7_irq_handler,              // UART7
     [99] = uart8_irq_handler,              // UART8
     [100] = spi4_irq_handler,              // SPI4

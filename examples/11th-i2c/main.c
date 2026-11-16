@@ -235,7 +235,7 @@ int main(void) {
         printf("No EEPROM found at 0x%02x\n", EEPROM_ADDR);
     }
 
-    uint32_t now = 0, next_blink = 0;
+    uint32_t now = 0, next_blink = 0, next_tick = 1000, loop_cnt = 0;
 
     while (1) { // Super loop
 
@@ -243,8 +243,19 @@ int main(void) {
 
         if (now >= next_blink) {
             gpio_write(led, !gpio_read(led)); // Toggle LED
-            next_blink = now + 500;
+            next_blink = now + 500;           // Schedule next toggle in 500 ms
         }
+
+        if (now >= next_tick) {
+
+            // The recovery count shows whether the I2C bus has needed rescuing since startup
+            printf("Tick: %7lu ( loop = %lu i2c recoveries = %lu )\n", now / 1000, loop_cnt, i2c_get_recovery_count(I2C1));
+
+            loop_cnt = 0;
+            next_tick = now + 1000; // Schedule next tick in 1000 ms
+        }
+
+        ++loop_cnt; // Just a counter to show how many times the loop runs between ticks
     }
 
     return 0;

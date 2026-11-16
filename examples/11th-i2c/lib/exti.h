@@ -81,7 +81,7 @@ struct exti {
 #define EXTI ((volatile struct exti *)0x40013C00)
 
 // Function prototypes
-void exti_init(uint16_t pin, uint8_t falling, uint8_t rising);
+void exti_init(uint16_t pin, bool falling, bool rising);
 int exti_get_pending(uint16_t pin);
 void exti_clear_pending(uint16_t pin);
 

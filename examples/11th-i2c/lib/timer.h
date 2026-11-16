@@ -182,6 +182,15 @@ struct timer {
 #define TIM9 ((volatile struct timer *)0x40014000)  // General-purpose timer
 #define TIM10 ((volatile struct timer *)0x40014400) // General-purpose timer
 #define TIM11 ((volatile struct timer *)0x40014800) // General-purpose timer
+#define TIM12 ((volatile struct timer *)0x40001800) // General-purpose timer
+#define TIM13 ((volatile struct timer *)0x40001C00) // General-purpose timer
+#define TIM14 ((volatile struct timer *)0x40002000) // General-purpose timer
+
+// Return codes - 0 is success, negative is an error
+enum {
+    TIM_OK = 0,
+    TIM_ERR_PARAM = -1, // Unknown timer instance or impossible frequency
+};
 
 // Status register flags (SR is rc_w0 - clear with a plain write of ~flag)
 #define TIM_SR_UIF BIT(0)   // Update interrupt flag
@@ -205,8 +214,8 @@ enum {
     TIM_MODE_PWM2 = 0x7,
 };
 
-void timer_init(volatile struct timer *tim, uint32_t hz);
-void timer_setup_interrupt(volatile struct timer *tim, uint32_t hz, uint8_t irq_num);
+int timer_init(volatile struct timer *tim, uint32_t hz);
+int timer_setup_interrupt(volatile struct timer *tim, uint32_t hz);
 void timer_clear_update(volatile struct timer *tim);
 void timer_enable(volatile struct timer *tim);
 void timer_disable(volatile struct timer *tim);

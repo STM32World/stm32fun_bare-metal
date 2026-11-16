@@ -14,8 +14,7 @@
 #include "f4x.h"
 
 /**
- * @brief RCC Peripheral Register Structure
- * Base address: 0x40023800
+ * RCC peripheral registers. Base address: 0x40023800
  */
 struct rcc {
     union {
@@ -94,7 +93,7 @@ struct rcc {
             volatile uint32_t PLLRDYC : 1;     // Bit 19: Main PLL ready interrupt clear
             volatile uint32_t PLLI2SRDYC : 1;  // Bit 20: PLLI2S ready interrupt clear
             volatile uint32_t CSSC : 1;        // Bit 21: Clock security system interrupt clear
-            volatile uint32_t : 9;             // Bits 22-31: Reserved
+            volatile uint32_t : 10;            // Bits 22-31: Reserved
         } CIR_b;
     };
 
@@ -119,7 +118,7 @@ struct rcc {
             volatile uint32_t ETHMACRST : 1; // Bit 25: Ethernet MAC reset
             volatile uint32_t : 1;           // Bit 26: Reserved
             volatile uint32_t OTGHRST : 1;   // Bit 27: USB OTG HS reset
-            volatile uint32_t : 1;           // Bit 28: Reserved
+            volatile uint32_t : 4;           // Bits 28-31: Reserved
         } AHB1RSTR_b;
     };
 

@@ -10,12 +10,14 @@
 #include "f4x.h"
 
 /**
- * @brief Initializes an EXTI line for a specific GPIO pin.
- * @param pin Use the PIN(port, pin) macro.
- * @param falling Enable falling edge trigger (1 or 0).
- * @param rising Enable rising edge trigger (1 or 0).
+ * Route a GPIO pin to its EXTI line, select the trigger edge(s), unmask the line and
+ * enable its interrupt in the NVIC. Lines 0-4 each have their own IRQ, lines 5-9 share
+ * EXTI9_5 and lines 10-15 share EXTI15_10. Only one port can use a given line number.
+ * @param pin: Pin, e.g. PIN('C', 15)
+ * @param falling: Trigger on the falling edge
+ * @param rising: Trigger on the rising edge
  */
-void exti_init(uint16_t pin, uint8_t falling, uint8_t rising) {
+void exti_init(uint16_t pin, bool falling, bool rising) {
 
     uint32_t pin_no = (uint32_t)PINNO(pin);
     uint32_t bank = (uint32_t)PINBANK(pin);
@@ -32,7 +34,7 @@ void exti_init(uint16_t pin, uint8_t falling, uint8_t rising) {
     SYSCFG->EXTICR[icr_idx] &= ~((uint32_t)0x0FU << shift);
     SYSCFG->EXTICR[icr_idx] |= (bank << shift);
 
-    // Configure Triggers using your BIT macro
+    // Configure the trigger edges
     if (rising) {
         EXTI->RTSR |= BIT(pin_no);
     } else {
@@ -62,7 +64,9 @@ void exti_init(uint16_t pin, uint8_t falling, uint8_t rising) {
 }
 
 /**
- * @brief Checks if a specific EXTI line has a pending interrupt.
+ * Check whether the EXTI line of a pin has a pending interrupt.
+ * @param pin: Pin, e.g. PIN('C', 15) (only the pin number matters)
+ * @return 1 if pending, else 0
  */
 int exti_get_pending(uint16_t pin) {
     uint8_t pin_num = (uint8_t)(PINNO(pin));
@@ -70,8 +74,10 @@ int exti_get_pending(uint16_t pin) {
 }
 
 /**
- * @brief Clears the pending flag for an EXTI line.
- * Note: EXTI->PR is "Write 1 to clear" (rc_w1).
+ * Clear the pending flag of the EXTI line of a pin. Must be done in the interrupt
+ * handler, or the interrupt fires again immediately. PR is "write 1 to clear" (rc_w1),
+ * so a plain write of the bit is used - no read-modify-write.
+ * @param pin: Pin, e.g. PIN('C', 15) (only the pin number matters)
  */
 void exti_clear_pending(uint16_t pin) {
     uint8_t pin_num = (uint8_t)(PINNO(pin));

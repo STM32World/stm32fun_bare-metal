@@ -22,16 +22,20 @@ SECTIONS {
   .rodata   : { *(.rodata*) }         > flash
 
   .data : {
+    . = ALIGN(4);                                /* _reset copies .data a word at a time */
     _sdata = .;                                  /* .data section start */
     *(.first_data)
     *(.data SORT(.data.*))
+    . = ALIGN(4);
     _edata = .;                                  /* .data section end */
   } > sram AT > flash
   _sidata = LOADADDR(.data);
 
   .bss : {
+    . = ALIGN(4);                                /* _reset clears .bss a word at a time */
     _sbss = .;                                   /* .bss section start */
     *(.bss SORT(.bss.*) COMMON)
+    . = ALIGN(4);
     _ebss = .;                                   /* .bss section end */
   } > sram
 
